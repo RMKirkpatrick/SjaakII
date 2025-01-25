@@ -500,6 +500,53 @@ Rule: captureanyflag = win
 Rule: stalemate = win
 
 
+############################################################################################
+# Fox and Hounds: Wolves and Sheep, by a different name                                    #
+############################################################################################
+Variant: afox-and-hounds (8x8)
+Board: 8x8
+FEN: "1h1h1h1h/8/8/8/8/8/8/4F3 w - -"
+XBoard pieces: ".....H...F.................h...f............"
+BlackFlag: a8,b8,c8,d8,e8,f8,g8,h8
+
+Piece: Fox
+Move: leap (1,1)
+Capture: none
+Symbol: "F", "F,f"
+
+Piece: Hound
+Move: aleap (1,1)|(-1,1)
+Capture: none
+Symbol: "H", "H,h"
+
+Rule: captureanyflag = win
+Rule: stalemate = win
+
+
+############################################################################################
+# White Wolves, Black Sheep: Color-swapped "Wolves and Sheep".                             #
+############################################################################################
+Variant: white-wolves-black-sheep (8x8)
+Board: 8x8
+FEN: "4s3/8/8/8/8/8/8/1W1W1W1W w - -"
+XBoard pieces: ".....W...S.................w...s............"
+WhiteFlag: a1,b1,c1,d1,e1,f1,g1,h1
+
+Piece: Sheep
+Move: leap (1,1)
+Capture: none
+Symbol: "S", "S,s"
+
+Piece: Wolf
+Move: aleap (1,1)|(-1,1)
+Capture: none
+Symbol: "W", "W,w"
+
+Rule: captureanyflag = win
+Rule: stalemate = win
+
+
+
 
 ###########################
 # Maharaja and the Sepoys #
