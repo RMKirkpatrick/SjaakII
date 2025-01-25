@@ -553,7 +553,8 @@ Capture: step NE,NW
 Special: rank2, rank7, step 2N
 Symbol: " ", "P,p"
 Flags: set_ep,take_ep
-Promotion: rank8, rank1, "QRBN"
+# Pawns are not supposed to promote in this variant, for the sake of game balance!:
+Block: rank8, rank1
 Value: 10
 
 
