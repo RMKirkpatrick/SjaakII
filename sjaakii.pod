@@ -1,0 +1,93 @@
+=head1 NAME
+
+sjaakii - xboard-compatible chess and chess-variant engine 'SjaakII'
+
+
+=head1 SYNOPSIS
+
+B<sjaakii> [-log|-newlog [filename]] [-variant name] [-no_user_variants] [-xboard|-uci|-uci|-ucci] [variant file]
+
+
+=head1 DESCRIPTION
+
+B<sjaakii> is a program that plays chess and chess variants. 
+It uses the xboard/winboard chess-engine protocol to communicate.
+Apart from normal chess, SjaakII can play Seirawan Chess, Mongolian Shatar,
+Makruk (including variants ASEAN and Ai-Wok), Shatranj, Sittuyin (Burmese
+Chess), Crazy House Chess, Chessgi, Spartan Chess, Pocket Knight Chess,
+King-of-th-Hill, Knightmate, Amazon Chess, Chancellor Chess, Berolina
+Chess, Los Alamos Chess, Micro Chess, Capablanca Chess, Gothic Chess,
+Embassy Chess, Courier Chess, Grand Chess, Opulent Chess, Omega Chess,
+Shogi (including variants Mini Shogi, Sho Shogi and Tori Shogi) and
+Xiang-Qi. Other variants can be added through a configuration file.
+
+See xboard(6) for instructions about how to use B<sjaakii> through xboard. To
+start up quickly, you just need the command: B<xboard -fcp sjaakii>.
+
+Some of the variants SjaakII plays are only partially supported by XBoard,
+and can only be played whith the legality-testing function of the latter switched off.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-log [filename]>
+
+Append all communication by SjaakII and XBoard to a logfile. If no filename
+is specified, the log is written to sjaakii.log.
+
+=item B<-newlog [filename]>
+
+As B<-log>, but the file is overwritten rather than added to.
+
+=item B<-variant name>
+
+Normally, SjaakII starts with variant "normal" (regular chess), but it can
+be made to start with any other named variant with this option.
+
+=item B<-no_user_variants>
+
+Do not read the default variant configuration file. You can still specify a
+file in the engine options.
+
+=item B<-xboard>
+
+Start in xboard mode rather than the default mode.
+
+=item B<-uci>
+
+Start in UCI mode rather than the default mode.
+
+=item B<-usi>
+
+Start in USI mode rather than the default mode.
+
+=item B<-ucci>
+
+Start in UCCI mode rather than the default mode.
+
+=item B<variant file>
+
+Read variant descriptions from the named file.
+
+=back
+
+=head1 AVAILABILITY
+
+From http://www.eglebbk.dds.nl/program/chess-index.html
+
+=head1 SEE ALSO
+
+xboard(6)
+
+=head1 STANDARDS
+
+WinBoard, B<xboard>(6) interface ("Chess Engine Communication Protocol")
+
+=head1 AUTHOR
+
+Evert Glebbeek <eglebbk@dds.nl>.
+
+This manual page was based on the man page for Fairy-Max by H.G. Muller and
+was generated with pod2man(1).
+

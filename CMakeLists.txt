@@ -1,0 +1,306 @@
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+
+# Set build type. Do this *before* we set the project name
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo Profile."
+      FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+
+set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" CACHE INTERNAL "internal")
+
+if(COMMAND cmake_policy)
+   cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
+project(sjaakxx CXX C)
+
+# Search in the `cmake' directory for additional CMake modules.
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+# Declare program options
+option(WANT_WARN   "Generate compiler warnings" on)
+option(WANT_WERROR "Treat warnings as errors" off)
+option(WANT_NATIVE "Optimise for the current machine" off)
+option(WANT_ASSERT "Enable assertions in the code (for debugging)" off)
+option(WANT_OPT    "Standard optimisations on/off" on)
+option(WANT_POPCNT "Use POPCNT instruction" off)
+option(WANT_SSE42  "Switch on SSE 4.2" on)
+option(WANT_SSE3   "Switch on SSE 3" off)
+option(WANT_SSE2   "Switch on SSE 2" off)
+option(WANT_32BIT  "Force compiler to generate 32 bit code" off)
+option(WANT_64BIT  "Force compiler to generate 64 bit code" off)
+#option(WANT_GUI    "Wether you want to build the GUI or not (requires Allegro)" off)
+#option(WANT_MGUI   "Wether you want to build the mobile GUI or not (requires Allegro) (experimental)" off)
+option(WANT_REFEREE "Wether you want to build the game referee" on)
+option(WANT_STATIC  "Wether you want to static link to standard libraries" off)
+option(WANT_PROFILE_GENERATE "Generate executable suitable for running profile-guided optimisation" off)
+option(WANT_PROFILE_USE "Generate executable using data from profile-generate run" off)
+option(WANT_PROFILE "Generate executable suitable for running with gprof" off)
+option(WANT_RELEASE "Generate a binary with a mangled name to represent the current platform" off)
+
+set(SJAAKII_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/sjaakii/" CACHE STRING "Install location for data files (${CMAKE_INSTALL_PREFIX}/share/games/sjaakii/)")
+
+# Parse user options
+if(WANT_OPT)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -finline")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3 -finline")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -finline")
+endif(WANT_OPT)
+if(WANT_WARN)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wno-unused")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wall -Wextra -Wno-unused")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused")
+endif(WANT_WARN)
+if(WANT_WERROR)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unused -Werror")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wall -Wno-unused -Werror")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused -Werror")
+endif(WANT_WERROR)
+if(WANT_NATIVE)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native -mtune=native")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -march=native -mtune=native")
+endif(WANT_NATIVE)
+if(WANT_POPCNT)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mpopcnt")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mpopcnt")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mpopcnt")
+endif(WANT_POPCNT)
+if(WANT_SSE42)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse4.2")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -msse4.2")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2")
+endif(WANT_SSE42)
+if(WANT_SSE3)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse3")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -msse3")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse3")
+endif(WANT_SSE3)
+if(WANT_SSE2)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse2")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -msse2")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+endif(WANT_SSE2)
+if(WANT_PROFILE_GENERATE)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-generate")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-generate")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-generate")
+endif(WANT_PROFILE_GENERATE)
+if(WANT_PROFILE_USE)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-use")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-use")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-use")
+endif(WANT_PROFILE_USE)
+if(WANT_ASSERT)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUGMODE")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DDEBUGMODE")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUGMODE")
+endif(WANT_ASSERT)
+if(WANT_32BIT)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+endif(WANT_32BIT)
+if(WANT_PROFILE)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg -g")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg -g")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -g")
+endif(WANT_PROFILE)
+if(WANT_64BIT)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m64")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m64")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64")
+endif(WANT_64BIT)
+if(WANT_STATIC)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -static")
+   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static")
+endif(WANT_STATIC)
+
+# Search for C header files in these directories.
+include_directories(
+   ${CMAKE_SOURCE_DIR}/include
+   ${CMAKE_BINARY_DIR}/include
+)
+
+set (SJAAKIIVERSION  "\"1.4.1\"")
+set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -DSJAAKIIVERSION=\\\"${SJAAKIIVERSION}\\\"")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSJAAKIIVERSION=\\\"${SJAAKIIVERSION}\\\"")
+
+if(WANT_GUI)
+   set(WANT_ALLEGRO 1)
+endif(WANT_GUI)
+
+if(WANT_MGUI)
+   set(WANT_ALLEGRO 1)
+endif(WANT_MGUI)
+
+if(WANT_ALLEGRO)
+   # Find zlib
+   find_package(ZLIB)
+   if (ZLIB_FOUND)
+      list(APPEND GUI_LIBS ${ZLIB_LIBRARIES})
+      include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS})
+   else (ZLIB_FOUND)
+      message(FATAL_ERROR "Can't find zlib library")
+   endif(ZLIB_FOUND)
+
+
+   # Find Allegro
+   set(ALLEGRO5_VERSION "5.1")
+   find_package(Allegro5)
+
+   if (ALLEGRO5_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5_INCLUDE_DIRS})
+   else (ALLEGRO5_FOUND)
+      message(FATAL_ERROR "Can't find Allegro library")
+   endif(ALLEGRO5_FOUND)
+
+   # Find Allegro addons
+   find_package(Allegro5Main)
+   if (ALLEGRO5MAIN_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5MAIN_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5MAIN_INCLUDE_DIRS})
+   else (ALLEGRO5MAIN_FOUND)
+      message(FATAL_ERROR "Can't find Allegro main addon")
+   endif(ALLEGRO5MAIN_FOUND)
+
+   find_package(Allegro5Primitives)
+   if (ALLEGRO5PRIMITIVES_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5PRIMITIVES_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5PRIMITIVES_INCLUDE_DIRS})
+   else (ALLEGRO5PRIMITIVES_FOUND)
+      message(FATAL_ERROR "Can't find Allegro Primitives addon")
+   endif(ALLEGRO5PRIMITIVES_FOUND)
+
+   find_package(Allegro5Font)
+   if (ALLEGRO5FONT_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5FONT_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5FONT_INCLUDE_DIRS})
+   else (ALLEGRO5FONT_FOUND)
+      message(FATAL_ERROR "Can't find Allegro font addon")
+   endif(ALLEGRO5FONT_FOUND)
+
+   find_package(Allegro5TTF)
+   if (ALLEGRO5TTF_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5TTF_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5TTF_INCLUDE_DIRS})
+   else (ALLEGRO5TTF_FOUND)
+      message(FATAL_ERROR "Can't find Allegro TTF addon")
+   endif(ALLEGRO5TTF_FOUND)
+
+   find_package(Allegro5Image)
+   if (ALLEGRO5IMAGE_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5IMAGE_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5IMAGE_INCLUDE_DIRS})
+   else (ALLEGRO5IMAGE_FOUND)
+      message(FATAL_ERROR "Can't find Allegro image addon")
+   endif(ALLEGRO5IMAGE_FOUND)
+
+   find_package(Allegro5Dialog)
+   if (ALLEGRO5DIALOG_FOUND)
+      list(APPEND GUI_LIBS ${ALLEGRO5DIALOG_LIBRARIES})
+      include_directories(SYSTEM ${ALLEGRO5DIALOG_INCLUDE_DIRS})
+   else (ALLEGRO5DIALOG_FOUND)
+      message(FATAL_ERROR "Can't find Allegro DIALOG addon")
+   endif(ALLEGRO5DIALOG_FOUND)
+endif(WANT_ALLEGRO)
+
+# Set install directory
+if (NOT SJAAKII_DATA_DIR)
+   set(SJAAKII_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/sjaakii/")
+endif (NOT SJAAKII_DATA_DIR)
+set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DDATADIR=\\\"${SJAAKII_DATA_DIR}\\\"")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDATADIR=\\\"${SJAAKII_DATA_DIR}\\\"")
+
+# code source files
+include(FileList)
+
+# Make a link library out of the source files
+add_library ("libsjaak" STATIC ${SJAAK_SRC_FILES})
+
+# Look for the standard math library
+find_library(M_LIB m)
+target_link_libraries("libsjaak" ${M_LIB})
+
+# Look for the standard math library
+include(CheckLibraryExists)
+CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+if (HAVE_CLOCK_GETTIME)
+   target_link_libraries("libsjaak" rt)
+   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DHAVE_CLOCK_GETTIME")
+endif (HAVE_CLOCK_GETTIME)
+
+add_executable ("sjaakii" src/xboard.cc)
+target_link_libraries("sjaakii" libsjaak)
+
+add_custom_command(TARGET "sjaakii"
+   POST_BUILD
+   COMMAND pod2man -s 6 ${CMAKE_SOURCE_DIR}/sjaakii.pod | gzip > ${CMAKE_BINARY_DIR}/sjaakii.6.gz
+)
+
+# Find readline
+find_package(Readline)
+if (READLINE_FOUND)
+   target_link_libraries("sjaakii" ${READLINE_LIBRARY})
+   include_directories(SYSTEM ${READLINE_INCLUDE_DIRS})
+   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DHAVE_READLINE")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_READLINE")
+else (READLINE_FOUND)
+   message(WARNING "Can't find readline library - disabling support")
+endif(READLINE_FOUND)
+
+if(WANT_REFEREE)
+   add_executable ("sjef" src/sjef.c src/timer/timer.c src/misc/keypressed.c src/misc/genrand.c src/misc/pipe2.c src/misc/sprt.c)
+   target_link_libraries("sjef" ${M_LIB})
+   target_compile_options(sjef PRIVATE -std=gnu99)
+endif(WANT_REFEREE)
+
+if(WANT_RELEASE)
+   set(PLATF "-unknown")
+   if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+      set(PLATF "-win")
+   endif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+   if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+      set(PLATF "-linux")
+   endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+   if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+      set(PLATF "-mac")
+   endif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   set(SSE "-sse")
+   if(WANT_SSE2)
+      set(SSE "-sse2")
+   endif(WANT_SSE2)
+   if(WANT_SSE3)
+      set(SSE "-sse3")
+   endif(WANT_SSE3)
+   if(WANT_SSE42)
+      set(SSE "-sse42")
+   endif(WANT_SSE42)
+
+   set(POPCNT "")
+   if(WANT_POPCNT)
+      set(POPCNT "-popcnt")
+   endif(WANT_POPCNT)
+
+   set(BITS "")
+   if(WANT_64BIT)
+      set(BITS "64")
+   endif(WANT_64BIT)
+   if(WANT_32BIT)
+      set(BITS "32")
+   endif(WANT_32BIT)
+   
+   set(VERSION "-${Project_WC_REVISION}")
+   
+   set(RELEASE_NAME "sjaakii${VERSION}${PLATF}${BITS}${SSE}${POPCNT}")
+   set_target_properties(sjaakii PROPERTIES OUTPUT_NAME "${RELEASE_NAME}")
+endif(WANT_RELEASE)
+
+# Installation targets
+install (TARGETS "sjaakii"                            RUNTIME DESTINATION "bin")
+install (FILES "${CMAKE_BINARY_DIR}/sjaakii.6.gz"     DESTINATION "share/man/man6")
+install (FILES "${CMAKE_SOURCE_DIR}/variants.txt"     DESTINATION "share/games/sjaakii/")
+install (FILES "${CMAKE_SOURCE_DIR}/misc/sjaakii.eng" DESTINATION "share/games/plugins/xboard/")
+install (FILES "${CMAKE_SOURCE_DIR}/misc/sjaakii.png" DESTINATION "share/games/plugins/logos/")

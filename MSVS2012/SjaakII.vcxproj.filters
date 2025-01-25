@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\xboard.cc" />
+    <ClCompile Include="..\src\timer\timer.c" />
+    <ClCompile Include="..\src\rules\bitboard.cc" />
+    <ClCompile Include="..\src\rules\game.cc" />
+    <ClCompile Include="..\src\rules\move.cc" />
+    <ClCompile Include="..\src\rules\san.cc" />
+    <ClCompile Include="..\src\rules\squares.cc" />
+    <ClCompile Include="..\src\misc\aligned_malloc.c" />
+    <ClCompile Include="..\src\misc\ansi.c" />
+    <ClCompile Include="..\src\misc\cfgpath.c" />
+    <ClCompile Include="..\src\misc\genrand.c" />
+    <ClCompile Include="..\src\misc\keypressed.c" />
+    <ClCompile Include="..\src\misc\softexp.c" />
+    <ClCompile Include="..\src\hash\evalhash.c" />
+    <ClCompile Include="..\src\hash\hashkey.c" />
+    <ClCompile Include="..\src\hash\hashtable.c" />
+    <ClCompile Include="..\src\eval\pst.cc" />
+    <ClCompile Include="..\src\misc\snprintf.c" />
+  </ItemGroup>
+</Project>

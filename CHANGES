@@ -1,0 +1,1623 @@
+Between 1.3.1 and 1.4.0
+
+	* include/game.h, src/xboard.cc: Fix setting of promotion
+	  choice/case ordering.
+
+	* src/xboard.cc: Implement interrupt on|off commands, to disable
+	  breaking off the search on keyboard input. This to help with
+	  batch processing of input.
+
+	* include/board.h: Add a function to print the actions that would
+	  be performed when making a move.
+
+	* include/eval_param.h, include/game.h, include/search.h: Fix two
+	  search issues: when injecting the PV into the transposition
+	  table, the score and moves could be mangled, corrupting the board
+	  struct. The other issue is that for large material differences,
+	  the initial aspiration window could break out without finding a
+	  PV (it would print a fail-high, but then fail to do the re-search
+	  to obtain a new score).
+
+	* include/eval_param.h, include/game.h: Revert accidental commit.
+
+	* src/xboard.cc: Suppress UCI_Chess960 in USI/UCCI mode.
+
+	* src/xboard.cc: Gracefully handle a few USI peculiarities from
+	  Shogidogoro.
+
+	* src/rules/move.cc: Fix in-place promotions being printed as
+	  "@@@@" (null-move).
+
+	* include/eval_param.h, include/game.h: Add an absolute floor to
+	  the game phase scale. This helps in variants that essentially
+	  begin in the end game.
+
+	* include/search.h: Replace check test with call to already defined
+	  function that does the exact same thing.
+
+	* include/betza_string.h, include/game.h, include/moveflag.h,
+	  include/movegen.h, include/pieces.h: Add "rider" as a move type,
+	  allowing for the implementation of Nightriders. The way this is
+	  handled is probably not ideal, since move generation first builds
+	  a bitboard step-by-step, before serialising it. It also does not
+	  handle multiple atoms in the move description yet.
+
+	* variants.txt: Add Nightrider Chess, which replaces Knights by
+	  Nightriders.
+
+	* src/rules/san.cc: Fix SAN corner-case where neither rank nor file
+	  disambiguation is sufficient.
+
+	* variants.txt: Remove comment.
+
+	* include/betza_string.h, include/movegen.h: Allow for multiple
+	  atoms for riders. Replace W and F riders by sliders.
+
+	* include/betza_string.h, include/board.h, include/game.h,
+	  include/movegen.h, include/variants.h: Add a new rule option:
+	  en-passant check. Sliding royals can then not "move through
+	  check".
+
+	* variants.txt: New variant: Caissa Britannia, with a royal Queen
+	  and several riders.
+
+	* include/board.h, include/movegen.h, include/variants.h,
+	  variants.txt: Add two new rules: "promote by move" promotes by
+	  moving the piece immediately as the piece it promotes to. "Quiet
+	  promotion" requires that the promotion move is a quiet move
+	  (which currently just means it cannot be a capture).
+
+	* include/movegen.h, include/piece_rules.h, include/piece_types.h,
+	  include/variants.h: Add a new option for promotion zones: the
+	  ability to disable promotion when entering a promotion zone (so
+	  only moves that start in the promotion zone allow for promotion).
+
+	* include/game.h, include/search.h: Filter out illegal promotions
+	  (non-quiet) during search.
+
+	* include/movegen.h, include/piece_types.h, include/variants.h: Add
+	  "promote last piece anywhere" rule, implemented in Sittuyin.
+
+	* include/variants.h: Adjust piece value of pawn in Sittuyin:
+	  because promotion is so restricted, the pawn value is practically
+	  just what it would get from its moves, which puts it at ~half the
+	  value of the Ferz.
+
+	* include/game.h, include/movegen.h, include/search.h: Correctly
+	  allow "wild" promotions to be optional. Test for check explicitly
+	  when filtering illegal moves when QUIET_PROMOTION is in effect;
+	  otherwise we miss discovered checks.
+
+	* include/variants.h: Piece drops on the back rank are allowed in
+	  Sittuyin (but unusual).
+
+	* include/movegen.h: Make "promote by move" replace the normal
+	  promotion rule.
+
+	* include/game.h, src/xboard.cc: If the piece abbreviation is " "
+	  (as normal for pawns), then base its name in the choice string on
+	  the white FEN-ID.
+
+	* include/game.h, src/xboard.cc: First attempt at evaluation
+	  parameter configuration files. They can be specified on the
+	  command line, or from the engine options menu. There is also an
+	  option to store this file or not, intended for use with automatic
+	  tuning.
+
+	* include/mate.h: Disqualify repeated positions from consideration
+	  in the mate-search: they cannot normally be part of optimal play,
+	  but may lead to the program blundering into a repetition loop if
+	  the opponent deviates from the expected line. Worst case, the
+	  mate-search doesn't find the mate and it is up to the main search
+	  to find it.
+
+	* src/xboard.cc: Re-use function to load evaluation parameter file.
+	  Avoid clling fclose() on a NULL-pointer.
+
+	* include/game.h: Set value of royal piece very high if not
+	  initialised. This is mainly so that SEE returns sensible numbers
+	  if royal pieces are involved (without this they have value 0,
+	  causing mis-evaluation of things like QxP / KxQ / RxK).
+
+	* include/pipe2.h, include/sprt.h, src/misc/pipe2.c,
+	  src/misc/sprt.c: Add support files for Sjef.
+
+	* include/fen.h: Very minor cleanup of FEN generation.
+
+	* CMakeLists.txt, include/pipe2.h, src/misc/pipe2.c, src/xboard.cc:
+	  Add non-standard feature "sjef" to indicate that SjaakII
+	  implements some extra commands to act as a referee engine in
+	  Sjef: the "fen" and "san MOVE" query commands.
+
+	* src/sjef.c: Re-add the Sjef match-playing program, using SjaakII
+	  as an external referee (incomplete).
+
+	* src/xboard.cc: Fixes to the "san MOVE" command.
+
+	* src/misc/pipe2.c, src/sjef.c: Rewrite large chunks of sjef, so it
+	  can now run correctly using an external referee program. Some
+	  features are still missing.
+
+	* src/sjef.c: Add support for the "memory" command to Sjef.
+
+	* src/sjef.c: Fix compilation errors.
+
+	* src/sjef.c: Record score/depth/time statistics during a game, for
+	  storage in the PGN file.
+
+	* CMakeLists.txt: Explicitly link libm to sjef executable (needed
+	  on Linux).
+
+	* src/xboard.cc: Fix uninitialised variable.
+
+	* CMakeLists.txt: Bump required CMake version to 2.8.12.
+
+	* src/misc/pipe2.c: Cleanup of bidirectional pipe stuff.
+
+	* src/xboard.cc: Make sure evaluation parameters are loaded
+	  correctly when starting a new game.
+
+	* src/misc/pipe2.c: Cleanup of bidirectional pipe code.
+
+	* include/pipe2.h, src/sjef.c: Correctly parse commandline options
+	  for referee and engines.
+
+	* src/sjef.c: Print an error message when an engine fails to load
+	  (instead of crashing).
+
+	* src/xboard.cc: Consider start move count (as passed in FEN) in
+	  time control.
+
+	* include/evaluate.h: Fix mobility evaluation: do not count
+	  occupied squares as possible move destinations.
+
+	* include/eval_param.h, include/evaluate.h: Implement tempo bonus
+	  in drop games, depending on material in-hand. This awards a bonus
+	  for having the initiative, and tests as an improvement (52%) in
+	  both Crazyhouse and Shogi.
+
+	* include/eval_param.h: Apparently INT16_MAX is not a standard
+	  define.
+
+	* include/evaluate.h: Slight refactor of tempo bonus.
+
+	* src/sjef.c: Do not clear USERMOVE flag when starting a new game.
+
+	* src/xboard.cc: Update Sittuyin perft counts for the updated
+	  rules.
+
+	* include/evaluate.h: Fix a typo: bbc[side] instead of bbp[side].
+
+	* variants.txt: Correct PieceToChar string for Caissa Brittania
+
+Between 1.3.0 and 1.3.1
+
+	* include/betza_string.h, src/xboard.cc: Silence "unused variable"
+	  warnings.
+
+	* include/game.h, include/variants.h, variants.txt: Make the 50
+	  move rule configurable from the configuration file.
+
+	* variants.txt: Remove castling from suicide chess, it's apparently
+	  not a move.
+
+	* msvs2015, msvs2015/SjaakII.props, msvs2015/SjaakII.sln,
+	  msvs2015/SjaakII.vcxproj, msvs2015/SjaakII.vcxproj.filters: Add
+	  MSVS 2015 build files.
+
+	* include/compilerdef.h, include/eval_types.h, include/evaluate.h,
+	  include/fen.h, include/game.h, include/movegen.h,
+	  include/movestring.h, include/variants.h, src/misc/ansi.c,
+	  src/misc/cfgpath.c, src/misc/snprintf.c, src/xboard.cc: Code
+	  changes by Martin Sedlak, to make the code compile on MSVS 2015
+	  in Windows.
+
+	* include/board_rules.h, include/game.h, src/xboard.cc: Fix result
+	  claim for illegal repetitions in games that do not use the chase
+	  rule.
+
+	* variants.txt: Remove outdated comment.
+
+	* include/variants.h: Fix incorrect deallocation of array of fixed
+	  size.
+
+	* include/movegen.h: Move caculation of occupied board inside piece
+	  loop. This is a bit faster because saving the value turns out to
+	  be more expensive than reconstructing the data from a simple OR.
+
+	* include/betza_string.h: Fix spurious output of "again" modifier
+	  in Betza string if the first leaper is a compound leaper.
+
+	* include/variants.h: There is no real need to force an empty line
+	  to terminate the piece description, so don't.
+
+	* include/fen.h: Emit error message also using "tellusererror", so
+	  the user gets to see it.
+
+	* include/variants.h: Add error message if a variant fails to load
+	  because the board is too large.
+
+	* include/piece_types.h: Move pawn structure related bitmasks away
+	  from move generation related datastructures to improve data
+	  locality and cache coherence.
+
+	* include/movegen.h, include/piece_rules.h, include/piece_types.h,
+	  include/variants.h, variants.txt: Add a new piece movement
+	  restriction: "block", which marks a square as always occupied for
+	  the purpose of determining movement options for a piece.
+
+	* include/movegen.h: Minor cleanup/simplification.
+
+	* include/movestring.h: Match SAN moves that include a "+" to
+	  indicate check.
+
+	* include/movegen.h: Correct capture victim for en-passant captures
+	  in Crazy-house.
+
+	* src/xboard.cc: Be a bit more strict about matching commands on
+	  input; through the "name" command and various options arbitrary
+	  strings can be entered.
+
+	* src/xboard.cc: Add Crazyhouse to the list of variants that are
+	  verified in the move generator test.
+
+	* src/xboard.cc: Add Crazyhouse position that tests whether
+	  demote-on-capture works.
+
+	* src/xboard.cc: Defer reply to "ping" until after we break out of
+	  the search loop.
+
+	* include/search.h: Log the FEN of the position that is being
+	  searched. This helps with debugging.
+
+	* include/betza_string.h: Fix a few minor bugs in the Betza string
+	  compiler.
+
+	* variants.txt: Remove redundant empty lines.
+
+	* src/xboard.cc: Allow for '-' in a variant name.
+
+	* src/xboard.cc: Implement new highlight colour Blue: for mandatory
+	  promotions with only one choice.
+
+	* include/game.h, src/xboard.cc: Allow for optional promotions in
+	  response to lift/put by including the piece ID itself.
+
+	* src/xboard.cc: Extend functionality: send promotion choice in
+	  response to "lift" if all valid moves have the same promotion
+	  options.
+
+	* include/movegen.h: Fix en-passant captures for forced-capture
+	  variants: these were not counted as captures, and so would not
+	  trigger the skipping of the generation of "quiet" moves.
+
+	* include/movegen.h: Implement "initial" moves (in addition to
+	  special moves) for pieces other than pawns.
+
+	* include/variants.h: Rename G->A in Xiangqi
+
+	* variants.txt: Add Wa-Shogi, with and without drops.
+
+	* include/game.h, include/search.h, src/xboard.cc: Add difficulty
+	  level combo-box. So far this has two options: normal alpha/beta
+	  search, and random.
+
+	* include/evaluate.h, include/game.h, include/search.h,
+	  src/xboard.cc: Rename the "Random" level to "clueless" and add a
+	  "random" level that is based on returning a random number from
+	  the evaluation.
+
+	* include/game.h, include/movelist.h, include/search.h,
+	  src/xboard.cc: Add multi-pv mode for analysis.
+
+	* include/search.h: Award victory if the 50 move counter reaches
+	  50, but it is mate.
+
+	* include/search.h: Fix typo.
+
+	* include/game.h, include/movelist.h, include/search.h,
+	  src/xboard.cc: Add another simple level of play, based on static
+	  analysis of legal moves.
+
+	* include/search.h: Slightly improve play for static move ordering
+	  skill level; the main goal is to make play "look" more
+	  natural/planned.
+
+	* src/xboard.cc: Add non-protocol "skill" command, to control
+	  playing level.
+
+	* include/search.h: Fix move ordering for static move order AI so
+	  it always prefers to promote to Queen. It will also avoid
+	  centralising its king in the opening phase of the game.
+
+	* src/xboard.cc: Fix spurious output of destination squares in
+	  response to "lift" due to drop moves.
+
+	* src/xboard.cc: Add non-protocol "history" command, to show game
+	  history.
+
+	* variants.txt: New variant, Theban Chess.
+	  http://www.talkchess.com/forum/viewtopic.php?t=52277
+
+Between 1.2.1 and 1.3.0
+
+	* src/xboard.cc: Report the left-hand side of the user-defined
+	  alias as well as the right-hand side as a supported variant, so
+	  that you can assign a new name to a variant in XBoard.
+
+	* include/search.h: Do not age the hash table in analysis mode.
+
+	* variants.txt: Expand description of piecetochar table. Include
+	  "Diana Chess", a 6x6 variant.
+
+	* include/variants.h: Fix a bug in the definition for queen-side
+	  castling for Capablanca Chess.
+
+	* src/xboard.cc: Send engine options from a dedicated subroutine.
+
+	* include/game.h, include/movegen.h, include/piece_rules.h,
+	  include/piece_types.h, include/variants.h: Increase the number of
+	  promotion zones from 1 (plus optional) to 16(which can each be
+	  optional). This slows things down a bit, but it increases
+	  versatility.
+
+	* variants.txt: Add three variants that use the larger number of
+	  promotion zones:
+     * Sherwin's Chess, where knights are allowed to promote on the second
+       rank
+     * Viceroy Chess, which is FIDE chess but with promotion to file-piece
+       (e-file to non-royal K)
+     * Chaturanga, with rules as given on chessvariants.org. It is
+       basically Shatranj, but with promotion by file-type to captured
+       pieces only.  As implemented, promotions are compulsory and so pawns
+       cannot advance with deferral of promotion.
+
+	* include/fen.h, include/piece_types.h, variants.txt: Add initial
+	  Knight-jump for King in Chaturanga.
+
+	* src/xboard.cc: Fix win/loss claim for variants where the point is
+	  to lose all your pieces: the code checked the wrong flag for the
+	  victory condition.
+
+	* include/movegen.h, include/search.h, include/variants.h: Allow
+	  for variants to specify that captures are forced.
+
+	* variants.txt: The ability to add forced captures in a variant
+	  allows for the definition of Suicide Chess. The play looks
+	  dreadful though (but alpha-beta isn't the best tool for the job
+	  here).
+
+	* variants.txt: New variant: Roman Chess (10x10)
+
+	* include/movegen.h: Change prototype of deduce_castle_flags so
+	  that it returns the index of the castle move it just defined.
+
+	* include/variants.h: Fix a regression in Sittuyin: promotions are
+	  always optional.
+
+	* include/betza_string.h, include/evaluate.h, include/fen.h,
+	  include/game.h, include/movegen.h, include/variants.h,
+	  src/xboard.cc, variants.txt: Implement flexible castling:
+	  multiple destinations can be given for the king, which can choose
+	  any of the given options. Add variant "schoolbook" that
+	  implements this.
+
+	* include/betza_string.h: Fix l/r/s output for castling moves.
+
+	* src/rules/san.cc: Fix disambiguation of moves by first piece
+	  type, which was broken.
+
+	* include/san.h, include/search.h, src/rules/san.cc, src/xboard.cc:
+	  Supress O-O/O-O-O notation for castling in variants with flexible
+	  castling.
+
+	* variants.txt: Add "supercapablanca chess", 12x8 with amazons and
+	  flexible castling.
+
+	* include/betza_string.h: Fix Betza output: the "i" modifier needs
+	  to be present on castling moves independently of whether other
+	  initial moves are specified.
+
+	* src/xboard.cc: Send variants again if the order in which they are
+	  sorted is changed. This used to work before, but the code was
+	  lost.
+
+	* src/xboard.cc: Slight re-write of code to resend options.
+
+	* include/board.h: Disable ANSI colours on Windows.
+
+	* cmake/FileList.cmake, include/ansi.h, include/board.h,
+	  src/misc/ansi.c: Add colour output to Windows terminal.
+
+	* include/movegen.h, include/piece_types.h, include/variants.h,
+	  variants.txt: Add a new piece property: iron, which means a piece
+	  cannot be captured.
+
+	* include/game.h, include/piece_types.h: Display iron status in
+	  rule output.
+
+	* include/board.h, include/movegen.h, include/variants.h,
+	  variants.txt: Add a new possible rule: attacking any king counts
+	  as check (if there are more than one).
+
+	* include/search.h: Eliminate some compiler warnings on MingW
+	  builds.
+
+	* MSVS2012/SjaakII.vcxproj, MSVS2012/SjaakII.vcxproj.filters: Add
+	  ansi.c to MSVS build files.
+
+	* include/movegen.h: Fix any king counts as check (if there are
+	  more than one) rule so it is actually tested.
+
+	* include/move.h, include/movegen.h: Simplify move generator code
+	  slightly be removing unused "ptaken" arguments.
+
+	* include/betza_string.h, include/movegen.h, include/piece_rules.h,
+	  include/piece_types.h, include/variants.h, src/rules/move.cc,
+	  src/rules/san.cc, src/xboard.cc, variants.txt: Add a new
+	  "Initial" move option, in addition to the "Special:" move option.
+	  It currently only works for stepper moves.
+	  Fix output of single-step castle moves (this is hard coded as a
+	  single
+	  step, which is assumed to be the normal king step as well).
+	  Add definition for Wildebeest Chess.
+	  Make variant parser a bit more robust, and recognise "WinBoard
+	  Pieces:"
+	  correctly (as documented).
+	  Make KxR input for castling work correctly.
+
+	* include/variants.h: Fix a crash when reading an optional
+	  promotion zone listing that does not specify a piece type: this
+	  only sets the optional zone, but does not add a new one.
+
+	* include/movegen.h, include/piece_rules.h, include/piece_types.h,
+	  include/variants.h, variants.txt: Remove "zone" for Initial
+	  moves: it is (should be) redundant.
+
+	* include/movegen.h: Fix a bug in the handling of pieces with
+	  initial moves: we should only set the "initial" zone if pieces
+	  actually have a different special move in that case.
+
+	* include/board.h, include/game.h, include/movegen.h,
+	  include/piece_types.h: Add a special rule flag to deal with
+	  side-effects of capture victims, and build a template over this
+	  for the move generator.
+
+	* include/game.h, include/movegen.h, include/piece_rules.h,
+	  include/piece_types.h, include/variants.h: Allow limiting the
+	  capture victims for each piece.
+
+	* include/evaluate.h, include/game.h: Include pieces that are
+	  initially in holdings for the purpose of determining the scale
+	  factor for the game phase.
+
+	* include/game.h: Increase weight of piece square tables in
+	  XiangQi.
+
+	* include/evaluate.h, include/game.h, src/xboard.cc: Add
+	  randomisation to the evaluation for the opening moves of the game
+	  (enabled by default). This can be configured through the engine
+	  options dialog. Fix a bug that prevented options from being set
+	  correctly from the GUI. Fix a bug that caused the setting of
+	  "random" to be ignored for variants other than "normal".
+
+	* src/xboard.cc: Under XBoard protocol, "random" is supposed to
+	  toggle.
+
+	* include/eval_param.h, include/game.h: Make scale factor for PST
+	  in XiangQi an adjustable parameter.
+
+	* src/misc/ansi.c: Make ansi.c compile on Windows (not C99).
+
+	* src/misc/ansi.c: Silence warning about implicit declaration.
+
+
+Between 1.2.0 and 1.2.1
+
+	* variants.txt: Bump value of Hawk and Unicorn in Musketeer chess
+	  to take into account the long-distance jumps that are not
+	  considered by the piece-value estimator.
+
+	* src/rules/move.cc, src/xboard.cc: Include KxR castling notation
+	  in the "longmoves" listing. Do not print castling moves as @@@@.
+
+	* include/search.h: Silence uninitialised variable warnings from
+	  Valgrind.
+
+	* include/game.h: Fix minor memory leaks, found by Valgrind.
+
+	* MSVS2012/SjaakII.vcxproj: Bump version number to 1.2.1.
+
+Between 1.2RC1 and 1.2:
+
+	* include/movegen.h: Simplify the generation of drop moves by
+	  omitting redundant conditions.
+
+	* src/xboard.cc: Add an option to disable sending O-O/O-O-O for
+	  castling to XBoard, which might break on some versions. However,
+	  doing this WILL break shuffle variants.
+
+	* src/xboard.cc: Place boolean (checkbox) options in a list at the
+	  top of the file, for easier expansion and editing: adding an
+	  option to the table will make it show up in the engine options
+	  box and it will be saved/restored from the configuration file.
+
+	* src/xboard.cc: Respond immediately to hashtable size option
+	  changes in UCI mode.
+
+	* include/variants.h: Change piece symbols for Marshall and
+	  Cardinal in Grand Chess to C and A (for Chancellor and
+	  Archbishop) to avoid conflicts with XBoard.
+
+	* src/xboard.cc: Add a commandline option "-normal" and a dialog
+	  option to override the game that is selected when the current
+	  variant is "normal". This is generally inadvisable but there is a
+	  use-case for it. For safety reasons, the option is not saved.
+
+	* variants.txt: Changes to Musketeer definition: use "C" rather
+	  than "O" for the Cannon (C was Chancellor, which is now M). Add
+	  virgin state to other files in startup FEN. Do not use Lion
+	  graphic for the Leopard (I picked Nightrider instead).
+
+	* variants.txt: Add a new variant, "Spanish archer", which features
+	  the archer (fRbB).
+
+	* variants.txt: Added another one: "enlarged and improved chess",
+	  which features mRcB and mBcR
+
+
+Between 1.0.0 and 1.2RC1:
+
+	* include/piece_rules.h, include/piece_types.h, include/variants.h:
+	  Add a "Demotion:" property that can be set from the config file,
+	  to force demotion on capture.
+
+	* include/movegen.h, include/piece_rules.h, include/piece_types.h:
+	  Store piece bitflags in a piece_flag_t (which is just a typedef
+	  for
+	  uint16_t, for now) rather than a uint16_t. For later expansion.
+
+	* include/piece_types.h: Fix typedef.
+
+	* include/movegen.h, include/variants.h, variants.txt: New piece
+	  property: assimilate. When capturing a piece with this property,
+	  the capturing piece promotes to its victim.
+
+	* include/movegen.h: Disallow special move for royal pieces when
+	  evading check.
+
+	* variants.txt: Add Ouk Chatrang as a variant in the config file.
+
+	* include/movegen.h, include/variants.h, src/rules/move.cc:
+	  Implement Chul Lion-style double moves from leapers. Notation
+	  leaves something to be desired, which needs a few changes to how
+	  moves are printed.
+
+	* include/chase.h, include/history.h, include/mate.h,
+	  include/search.h, include/see.h: Eliminate 'get_move_piece()'
+	  from much of the code.
+
+	* include/fen.h: Correctly set en-passant victim if the FEN string
+	  terminates after the en-passant square.
+
+	* src/xboard.cc: Give priority to user-defined variants when
+	  matching variant names. This allows the user to override the
+	  description for a build-in variant.
+
+	* src/rules/move.cc, src/rules/san.cc: Fix output of double moves
+	  in output. Has a slight hack: it relies on the piece symbol ' '
+	  to suppress special treatment of captures that are not by
+	  replacement (which is needed to treat en-passant captures
+	  correctly).
+
+	* variants.txt: Fix a mistake in the definition for Ouk Chatrang:
+	  rank3/rank6 were not defined.
+
+	* include/variants.h: Fix a bug in the parser for Prison: tags in a
+	  variant description. It would fail if it did not find a third
+	  argument, which should be non-existent.
+
+	* variants.txt: Add MiniXiangqi, a 7x7 Xiangqi variant
+	  http://mlwi.magix.net/bg/minixiangqi.htm
+
+	* include/betza_string.h: Make Betza notation work (sortof) for
+	  double-step leapers.
+
+	* include/betza_string.h: Change output of Betza string for
+	  multi-leg moves: we need to explicitly mention the move/capture
+	  options, as well as the reverse move.
+
+	* include/board.h, include/movegen.h, include/piece_types.h,
+	  include/variants.h, variants.txt: Add the no_retaliate property
+	  for pieces: after capture of a piece of this type, your own
+	  pieces may not be recaptured immediately.
+
+	* src/xboard.cc: Fix highlight command for multi-step moves.
+
+	* include/movegen.h: Fix generation of lion attack maps: lions do
+	  not defend themselves.
+
+	* include/movegen.h, include/piece_types.h, include/variants.h: Add
+	  "endangered" property: pieces of this type are not allowed to
+	  capture
+	  eachother if the victim is (pseudo-)protected.
+	  With this change, SjaakII can play "Elven" chess.
+
+	* variants.txt: Add Elven Chess as a new variant defined in the
+	  input file.
+
+	* include/movegen.h: Fix calculation of leaper moves for ENDANGERED
+	  pieces. Fix evasion generation for double-leapers (they can
+	  capture the checking piece and then move again).
+
+	* include/board.h: pieces with the no_retaliate property may
+	  capture eachother without setting the no_retaliate flag.
+
+	* variants.txt: Fix castling flags for Elven Chess.
+
+	* include/piece_types.h, include/variants.h, variants.txt: Expose
+	  PF_CAPTUREFLAG in config file.
+
+	* include/board.h, include/game.h, include/search.h,
+	  include/variants.h, src/xboard.cc, variants.txt: Implement
+	  3-check chess by exposing check-count a game termination
+	  condition.
+
+	* variants.txt: Set parent variant of 3check to 3check (it is a
+	  standard variant).
+
+	* include/evaluate.h: Award evaluation bonus for having checked the
+	  enemy king in 3check.
+
+	* include/search.h: Accept exact hash cut-offs if they are outside
+	  the window.
+
+	* src/xboard.cc: Creating a movelist before search is only needed
+	  if we're going to use it for SAN output.
+
+	* include/movegen.h: Fix holdings update after en-passant capture:
+	  SjaakII used to take the piece from the destination square, but
+	  since this is supposed to be empty it retrieves an old (stale)
+	  entry from the board and places an arbitrary piece in the
+	  holdings.
+
+	* src/xboard.cc: Minor cleanup of command-line interface code.
+
+	* include/movegen.h: Fix an oversight that broke store-to-holdings
+	  for normal (as opposed to en-passant) captures.
+
+	* include/search.h: More agressive null-move reductions with
+	  increasing depth. This seems to be what everyone else does
+	  anyway, and it tests as a modest improvement in Chess and an
+	  improvement or neutral in Shogi.
+
+	* include/game.h: Tuning: reduce the centralisation score in the
+	  piece square tables, except for drop games.
+
+	* include/evaluate.h: Change the way material scoring is handled in
+	  relation to defensive pieces. In particular don't treat the
+	  presence of defensive material as a reason to accept losing a
+	  piece.
+
+	* include/game.h, src/xboard.cc: Add non-protocol 'pst' command
+	  that outputs the PST.
+
+	* include/variants.h: Set stale_score = mate_score = won for
+	  Xiangqi.
+
+	* include/eval_param.h, include/evaluate.h, include/game.h: Add a
+	  bunch of Xiangqi evaluation tweaks: penalty for a Cannon on the
+	  same file as the king, change king PST and tweak hopper/slider
+	  palace-related PST. Scores ~70% in self play after 100 games.
+
+	* include/movegen.h: Fix a problem in detecting attacks in Xiangqi:
+	  if any attackers along a ray were restricted in their moves teh
+	  entire attack mask would be intersected by this, not just attacks
+	  from the piece under consideration. Also keep the "to" square set
+	  in the move mask to test for new ray-based attacks: this is
+	  needed to detect new attacks by cannons.
+
+	* include/evaluate.h: Revert 486, which is redundant with the
+	  scaling of piece values and drops ~40 elo in self-play.
+
+	* variants.txt: Add Mighty Lion Chess as a defined variant. It
+	  appears to work correctly, but there may still be some issues.
+
+	* include/evaluate.h, include/game.h, include/search.h,
+	  include/variants.h, variants.txt: Disable 50 move rule for
+	  Xiangqi.
+
+	* include/search.h: Correct move number in PV output for black to
+	  move.
+
+	* include/evaluate.h, include/variants.h: Normalise scoring of
+	  defensive pieces in Xiangqi.
+
+	* include/search.h: Fix a problem in ponder search: if the search
+	  finishes, wait until we are taken out of ponder mode to prevent a
+	  second (useless) pnder search from being started and flooding the
+	  interface with output.
+
+	* include/variants.h: Promotions are mandatory in Tori Shogi.
+
+	* include/movegen.h: Fix a few inconsistencies and oversights that
+	  could cause random pieces to be placed in holdings for steppers
+	  due to accessing the en-passant victim rather than the
+	  destination square.
+
+	* src/rules/move.cc: Fix duplicate piece symbol at end of gating
+	  move in LAN.
+
+	* src/rules/move.cc: Fix a bug when translating moves to LAN: drop
+	  moves could incorrectly be printed as NULL moves if the passed
+	  the "from == to" test. Drop moves are now excluded explicitly.
+
+	* src/xboard.cc: Add 'playother' command, but don't tell xboard we
+	  support it (I'm not sure what it's supposed to be used for and it
+	  seems rather pointless, but it's useful to have for debugging
+	  purposes).
+
+	* src/rules/san.cc: Fix SAN disambiguation of gating moves.
+
+	* include/move.h: Fix an overflow problem when updating holdings
+	  for castle moves by shrinking the size of the holding slot in the
+	  move encoding by one bit.
+
+	* include/variants.h, src/xboard.cc, variants.txt: Move Amazon
+	  Chess and Chancellor Chess to the variants.txt file (from the
+	  build-in list of variants).
+
+	* include/eval_param.h, include/evaluate.h: Rename
+	  PASSER_RANK_SCALE to PASSER_RANK_BASE.
+	  Add a new PASSER_RANK_SCALE that can be used to scale the weight
+	  of the
+	  quadratic term in the passed pawn evaluation.
+
+	* include/eval_param.h, include/game.h: Parameterise mobility
+	  evaluation and allow for different scale factors in middle game
+	  and end game.
+
+	* include/game.h: Fix typo in commented-out Senpai formula.
+
+	* include/eval_param.h: Document some STS scores for mobility
+	  scaling parameters.
+
+	* include/game.h: Fix a typo that caused the sign of some of the
+	  rook PST entries to be flipped.
+
+	* include/eval_param.h, include/game.h: Make the general form of
+	  the piece square tables bilinear.
+
+	* variants.txt: Add "Musketeer chess", with Seirawan-like gating
+	  rules.
+
+	* include/chase.h, src/xboard.cc, variants.txt: Add auto-complete
+	  for some additional commands: moves, longmoves, pieces,
+	  pieceinfo.
+
+	* src/xboard.cc: When printing moves in LAN format for the
+	  longmoves command, print castlingmoves as "fromto" rather than
+	  "O-O".
+
+	* include/fen.h: Partial fix to decoding castling rights from FEN
+	  positions: the original code assumed that castling was with king
+	  and rooks on the back rank, the new code just assumes that they
+	  are on the same rank. This still breaks Troitzky chess, but that
+	  was already broken and fixing it needs a more thorough re-design
+	  of the code since we can no longer assume that king and rooks are
+	  on the same rank, or indeed all on the same ray.
+
+Between 1.0RC7 and 1.0.0:
+
+	* include/game.h: Make sure SEE cache is initialised to 0 at
+	  startup.
+
+	* include/piece_types.h: Use piece_bit_t to encode promotion
+	  choices.
+
+	* include/chase.h: Fix chase detection: the retrieved from/to
+	  squares were entirely bogus. Avoid using
+	  get_move_captured_piece().
+
+	* include/move.h, include/see.h: Retire get_move_captured_piece.
+
+	* include/move.h: Reduce size of pickup encoding to a single
+	  square.
+
+	* include/movegen.h, include/variants.h, src/rules/move.cc: Add a
+	  prototype version of the Chu Shogi Lion to the test variant (as
+	  WFADN0 leaper). Add the ability to store a null-move to the move
+	  generator
+	  (implemented as a 0-jump). This is output as @@@@ in LAN.
+
+	* include/move.h: Allow encoding of double captures (Lion moves).
+	  DO not reset 50 move counter on castling. Make move description
+	  agree with what is implemented.
+
+	* include/variants.h: Add Lion definition to test game.
+
+	* include/board.h, include/history.h, include/killer.h,
+	  include/move.h, include/search.h, include/see.h: Eliminate
+	  get_move_player.
+
+	* include/movegen.h: Try to unwind some of the nested template
+	  code. This still does the same,
+	  but it leaves the job to the compiler.
+
+	* include/movestring.h: Remove move_is_long_algebraic, it is no
+	  longer used.
+
+	* src/xboard.cc: Add longmoves command, which prints out the moves
+	  in different formats.
+
+	* include/piece_rules.h: Apply "cyclic" promotions on Shogi pieces:
+	  if a + piece is promoted, it reverts to its unpromoted state.
+
+	* src/rules/move.cc, src/rules/san.cc: Correctly output "+" for
+	  "promotion" of promotion pieces (subject to change)
+
+	* include/fen.h: Allow multi-character piece encodings in FEN
+	  strings. In particular, this allows ' and ! which are allowed
+	  extra characters in XBoard.
+
+	* src/xboard.cc: Backport UCI ponder fix from Jazz.
+
+	* src/xboard.cc: Remove stray ;
+
+	* include/game.h: Push pawns more agressively in drop games, since
+	  we cannot rely on game phase to activate an end-game term for
+	  this.
+
+	* include/eval_param.h, include/game.h: Add general quadratic terms
+	  for pawn advancement in piece square tables. The only term
+	  currently in use is the quadratic end-game term, but at least the
+	  linear MG term may be useful to have as well.
+
+	* include/search.h: Remove unused maxdepth/seldepth output.
+
+	* include/board.h, include/movegen.h, include/variants.h,
+	  src/rules/move.cc, variants.txt: Allow promotions on drop moves.
+	  Allows for the implementation of Kyoto Shogi.
+
+	* include/game.h, include/movegen.h, include/piece_types.h: Use 32
+	  bit integers for piece masks, since we now have 32 piece types.
+
+Between 1.0RC6 and 1.0RC7:
+
+	* include/board.h: Trap illegal square numbers being passed to
+	  board.get_piece() in debug mode.
+
+	* include/game.h: Reflect changes in castle rights in the hash key.
+	  This needs to be done in "playmove" rather than "makemove"
+	  because "makemove" does nt have access to the move generator.
+
+	* include/fen.h: Correct presence of castling and en-passant fields
+	  in FEN string for whether these moves occur in a game. Correct
+	  full-move counter output in FEN.
+
+	* include/movegen.h: More direct and explicit test of whether
+	  promotion moves out of the promotion zone are allowed or not.
+	  Again, this should perhaps be a separate flag in the future,
+	  instead of being implied by RF_PROMOTION_IN_PLACE.
+
+	* src/xboard.cc: Fix Sittuyin test positions.
+
+	* include/see.h: Do not order non-captures by LVA. This seems to
+	  cause problems with optimised builds under Windows.
+
+	* include/movegen.h: Print an error message if a config file
+	  defines too many pieces.
+
+	* include/movegen.h: Separate leaper and aleaper counts.
+
+	* include/game.h: Avoid floating point exception when assigning a
+	  scaled piece value with a scale of 0
+
+	* include/movegen.h: Proper re-use of stepper descriptions/indices.
+
+	* include/game.h: Print number of pieces of a particular type as
+	  output of pieceinfo.
+
+	* include/betza_string.h, include/movegen.h: Rewrite matching of
+	  leaper moves to more efficiently reuse existing entries. The code
+	  is now simpler as well.
+
+	* include/movegen.h: Rewrite matching of aleaper moves to more
+	  efficiently reuse existing entries. The code is now simpler as
+	  well.
+
+	* include/variants.h: Promotions are not optional in Makruk.
+
+Between 1.0RC5 and 1.0RC6:
+	* src/xboard.cc: Fix compilation if readline is not available.
+
+	* include/movegen.h, include/piece_rules.h, include/piece_types.h,
+	  include/variants.h: Fix a problem in Tori Shogi: the drop-rule
+	  states a sparrow may not be dropped on a file that has *two*
+	  friendly sparrows.
+
+	* include/evaluate.h: Disable game-phase interpolation for variants
+	  where captured pieces are
+	  returned to the board: material on the board does not reflect
+	  game phase in
+	  this case.
+
+	* include/movegen.h: Fix a problem with promotions in Shogi: pawn
+	  moves out of the optional
+	  promotion zone are not optional.
+
+	* include/movegen.h: Better fix for optional promotions in Shogi
+	  that does not potentially break
+	  EuroShogi.
+
+	* include/move.h: Replace hard-coded numbers with symbolic
+	  constants for shifts and masks when building up the move struct.
+
+	* include/move.h: Replace more hard-coded numbers with symbolic
+	  constants for shifts and masks when building up the move struct.
+
+	* include/move.h: Replace more hard-coded numbers with symbolic
+	  constants for shifts and masks when building up the move struct.
+
+	* include/move.h, include/pieces.h: Replace hard-coded numbers with
+	  symbolic constants for shifts and masks when building up piece
+	  IDs.
+
+	* include/board.h, include/pieces.h: Remove almost unused piece_t.
+	  This also fixes a hidden conversion of unsigned->signed.
+
+	* include/game.h, include/movegen.h, include/piece_types.h,
+	  include/search.h: Do not defer promotion (in the search) if this
+	  is unneeded because the unpromoted piece has a subset of the
+	  moves of the promoted piece. Mainly affects Shogi-like variants.
+
+	* include/piece_types.h, include/pieces.h: Use typedef for piece
+	  bitfields (instead of uint16_t).
+
+	* include/movegen.h: Replace 0xffffffff by ~0 for bitmasks
+	  representing piece-sets: this makes
+	  it agnostic of the size of the bitmask.
+
+	* include/movegen.h: Reuse leaper tables more efficiently by just
+	  looping over existing tables at the end (the clever way that
+	  avoids this doesn't seem to actually work, and only captures a
+	  sub-set anyway). Also fixes a bug where defining a new leaper
+	  could clear the aleaper tables.
+
+	* include/movegen.h: Reuse stepper descriptions in the same way as
+	  leaper descriptions.
+
+	* include/movegen.h: Make sure piece-type masks have enough space.
+
+	* include/movegen.h, include/pieces.h: We do not need to keep track
+	  of the number of sliders and hoppers; to construct the super
+	  slider/hopper we only need to keep track of the joined move
+	  flags.
+
+	* include/move.h: Re-use piece side encode/decode in move decoding.
+
+	* include/move.h, include/see.h: Fix a bug in MVV/LVA ordering:
+	  make sure a move is a capture move before extracting a captured
+	  piece.
+
+	* include/betza_string.h: Betza notation for drop moves
+	  (future-proofing for XBoard).
+
+	* include/variants.h: Handle arbitrary-length pieceToChar strings
+	  in input file.
+
+	* include/search.h: Fix cosmetic typo: use hash_move when storing
+	  the counter-move table.
+
+	* include/game.h: Cleanup.
+
+	* include/board.h: Keep track of a separate hash key for the board
+	  hash (in addition to the full hash).
+
+	* include/search.h: More agressive pruning of futile drops near the
+	  leaves of the tree.
+
+	* include/search.h: Always accept mate scores from the TT,
+	  independent of remaining depth: more depth is not going to alter
+	  the mate result...
+
+	* include/search.h: Offer a draw if the game lasts extremely long
+	  (> 400 moves). This may take some 8 moves or so to trigger for
+	  the first time.
+
+	* include/board.h, include/fen.h, include/game.h, include/search.h:
+	  Implement detection of "pseudo-repeats" in drop games: these are
+	  repeats
+	  where the position is repeated, but the holdings are not. In a
+	  typical
+	  case, we may be leaking pieces to the hand of the opponent -
+	  which means we
+	  are now worse off than we were when the position occurred last.
+	  If this situation is detected, we simply fail low immediately at
+	  this node.
+
+	* include/variants.h: Handle arbitrary-length pieceToChar strings
+	  in input file: now without crashing (the required size was
+	  calculated incorrectly).
+
+	* include/movegen.h: Fix generation of evasions if the checker is a
+	  lame leaper (which can be blocked). This caused Sjaak to miss
+	  some possible evasions.
+
+	* src/xboard.cc: Switch to force mode after setboard. This is safe
+	  to do, but not strictly specified in the protocol.
+
+	* include/evaluate.h, src/xboard.cc: Add another Xiangqi test
+	  position, this one testing evasion by blocking a lame leaper.
+
+	* include/evaluate.h: Revert accidental inclusion of change in
+	  evaluate.h in last commit.
+
+	* include/eval_param.h, include/game.h: Implement framework for
+	  piece value scaling of defensive pieces with game phase. Swap the
+	  test for defensive pieces and lame leapers.
+
+	* include/game.h: Fix calculation of pair bonus for defensive
+	  pieces, which was completely wrong (resulting in a bonus that was
+	  larger than the piece value).
+
+	* include/eval_param.h: Decrease the value of defensive pieces in
+	  the end game.
+	  This encourages advancing the game phase (exchanging attacking
+	  pieces) if
+	  we are behind an attacking piece for a defensive piece, and
+	  discourages
+	  simplification to dead-drawn endings where the advantage consists
+	  entirely
+	  of defensive pieces.
+	  The end point of the scale (0.8 of the nominal value) has not
+	  been tuned.
+
+	* include/movegen.h: If promotions are flagged as in-place,
+	  disallow optional promotions by moving out of the promotion zone.
+	  Fixes a bug in Sittuyin that allowed them.
+
+	* src/xboard.cc: Modularise testing of move generator. Add Sittuyin
+	  test position, to handle drop promotions.
+
+	* variants.txt: Add three (four) contributed variants: Euro Shogi,
+	  Yari Shogi and Goro goro
+	  Shogi (with and without knight/lance in hand).
+	  Thanks to Harm-Geert Muller and Keith White.
+
+	* include/move.h: Make move format description match what is
+	  actually implemented in the code.
+
+	* include/pieces.h: Increase number of allowed pieces to 32 (up
+	  from 16).
+
+	* include/evaluate.h: Revert Shogi forward king-safety patch. It is
+	  a regression at longer time controls.
+
+	* include/search.h: Change repetition detection: if the first
+	  repetition is in the game history (as opposed to search) do not
+	  automatically score the second repetition as a draw if it occurs
+	  in the search.
+
+	* src/xboard.cc: Fix a cosmetic mistake when listing variant names
+	  for the "Fairy selects" option (stray ,).
+
+	* include/movegen.h: Generalise castle mask code to work along
+	  general rays (not just ranks)
+
+	* include/fen.h: Make FEN parsing of castle moves work if king and
+	  rook are not on the same rank.
+
+	* variants.txt: Fix board FEN for Troitzky Chess to include dark
+	  squares.
+
+	* variants.txt: Fix board FEN for Troitzky Chess to not list
+	  castling.
+
+	* include/movegen.h: Guard against accidentally setting
+	  off-the-board squares.
+
+	* variants.txt: Added the 'Byway' setup as an alternative to the
+	  'Jelliss' setup for Troitzky Chess. This implements castling with
+	  a rook that is not on the same rank. This will NOT work in
+	  XBoard.
+
+	* include/variants.h: Rename Marshall->Marshal.
+
+	* include/game.h, include/movegen.h, src/xboard.cc: Make rules
+	  include pawn doubl-pushes in board output. Add a special
+	  "wikirules" command that prints out the rules in a template
+	  suitable for putting on a wiki.
+
+	* include/game.h: Fix wiki formatting for bullet lists.
+
+	* include/game.h: Add templated note about rules being
+	  auto-generated.
+
+	* include/variants.h: Fix promotion in Shatranj: to queen (ferz)
+	  only.
+
+	* include/variants.h: Fix white promotion zone in Gardner
+	  Minichess.
+
+	* variants.txt: Fix promotions in Omicron Chess to include Wizard
+	  and Champion.
+
+	* include/game.h: Tweaks to Wiki-output for rules. Add a section on
+	  promotions, with boards
+	  indicating the promotion zones.
+
+	* include/game.h: Clarify drop rules in rule description.
+
+	* include/game.h: Tweaks to wiki-fied output.
+
+	* variants.txt: Fix Black promotion zone for Peasant's Revolt.
+	  Cosmetic fix for Corner Chess.
+
+Between 1.0RC4 and 1.0RC5:
+
+	* include/move.h: Fix a bug in decoding the move piece. This seems
+	  to have mainly had cosmetic effects, but it is an actual bug that
+	  could trip up move matching and things like SEE.
+
+	* include/piece_rules.h, src/rules/move.cc, src/rules/san.cc:
+	  Correct SAN output of piece symbol for promoted pieces in Shogi.
+
+	* variants.txt: Mark perpetual check as illegal in Judkins Shogi.
+
+	* include/game.h, include/piece_rules.h, include/piece_types.h,
+     include/variants.h, variants.txt: Allow specifying of the optional
+     promotion zone, prison and drop-zones from the configuration file. Add
+     a new piece property, "drop dead", which means the piece can be
+     dropped in locations where it has no legal moves.
+
+	* src/xboard.cc: Fix missing strdup().
+
+	* include/search.h: Fix overzealous pruning of drops near the root
+	  to finish a 1-ply search: doing it at greater depth leads to ugly
+	  and misleading analysis from shallow searches.
+
+	* src/xboard.cc: Add protocol extension load and unload commands,
+	  to load variant definitions on the fly.
+
+	* src/xboard.cc: Invalidate a file before loading it again.
+
+	* include/search.h: Code cleanup: put code to score moves in the
+	  move list in its own function.
+
+	* include/search.h: Replace static capture search with actual
+	  q-search.
+
+	* include/move.h, include/search.h, include/see.h: Fix a major bug
+	  when extracting the side that moved from a move: it was
+     always extracted as white. This completely broke SEE for black, and
+     broke history and counter-move tables as well by lumping all moves
+     from both sides together.  Add proper SEE evaluation of drop moves.
+
+	* src/xboard.cc: Print the correct repetition count for N-fold
+	  repetition (instead of just 3)
+
+	* include/board.h, src/xboard.cc: Add "(debug)" to the version
+	  number of debugging builds.
+	  Add an extra sanity-check/assert in makemove.
+
+	* include/search.h: Re-organise code for pruning decisions. This is
+	  a bit cleaner, and allows us to avoid calculating the static
+	  evaluationif it is not needed.
+
+	* include/search.h: Get rid of the beta==alpha-1 condition on
+	  razoring. First of all it is a bug (should be beta==alpha+1),
+	  second of all, razoring in PV nodes is perfectly fine.
+
+	* include/fen.h, include/game.h, include/movegen.h,
+	  include/piece_rules.h, include/piece_types.h, include/pieces.h,
+	  include/variants.h, src/xboard.cc: Fix parsing of initial state
+	  in FEN positions.
+     There was a bug that could cause both castle flags to be set if one of
+     them was, and the parser did not work correctly for Seirawan-style
+	  strings.
+	  
+     There are a number of caveats with this though, for the interaction
+     between backrank virgin pieces and castling rights in s-FEN. There may
+     also be issues with shuffle variants on large boards (where 'k'
+     denotes a rank, but 'k' is also used to indicate castling rights in
+     Omega chess, for instance).
+
+	* include/eval_param.h, include/evaluate.h: Award a penalty to a
+	  loose minor (a minor that is not defended by a pawn), scaled with
+	  the number of super pieces.
+
+	* include/search.h: Fixes for analysis mode: do not break out early
+	  if mate is found or if there is only one move in the current
+	  position. If we do reach the end of the line, just wait until
+	  we're told to exit analysis mode. Otherwise the engine starts
+	  spamming the GUI over and over again until something breaks and
+	  things crash.
+
+	* include/search.h: Fixes for analysis mode: do not break out of
+	  the analysis loop if asked to analyse in a checkmate position.
+	  This floods the output queue.
+
+	* include/fen.h: Make sure king_from was set before trying derive
+	  castle flags from it.
+
+	* include/game.h, include/piece_types.h: Add a function to
+	  guestimate piece values if none are specified.
+
+	* include/fen.h, include/movegen.h: Make sure variables related to
+	  castle moves that are not defined in a variant are well-defined.
+
+	* include/evaluate.h, include/variants.h: Scale piece-values in
+	  Shogi by 0.25.
+
+	* include/variants.h: Tune scale-factor for material in Shogi.
+
+	* include/game.h: Tune scale-factor for material in Shogi.
+
+	* include/game.h: Minor tweaks to the piece value guestimator to
+	  try to give a better indication of piece strength for asymmetric
+	  pieces (it now scores shogi-knight ahead of shogi-lance) as well
+	  as take into account the elephantiasis of all pieces promoting to
+	  gold generals in shogi.
+
+	* include/eval_param.h, include/evaluate.h: Parameterise space
+	  advantage.
+
+	* include/eval_param.h, include/evaluate.h: Minor refactoring and
+	  code cleanup for evaluation.
+
+	* include/evaluate.h: Prophylactic commit: penalise the king
+	  shelter in shogi if there are empty squares in front of the king.
+	  This is a very clear gain at slow time controls, less so at long
+	  time controls (test is still running, but doesn't look bad - it's
+	  still better).
+
+	* src/xboard.cc: If reading input from a file rather than a
+	  terminal, skip comments.
+
+	* include/variants.h: Fix parsing of optional promotion zones from
+	  the input file.
+
+	* include/movegen.h: If a move originates within the promotion
+	  zone, but not the optional promotion zone, disallow generation of
+	  regular move.
+
+	* src/rules/san.cc: SAN output: no need to disambiguate with
+	  respect to drop moves.
+
+	* include/variants.h: Ensure that the promotion zone includes the
+	  optional promotion zone, if both are set from the config file.
+
+	* include/fen.h, include/game.h, include/search.h: Two unrelated
+	  things:
+	  
+     1. Detect (some) mates in quiescence search: if the path leading to
+     mate consists entirely of check/evasion moves, then the mate score
+     from quiescence can be trusted and returned.
+	  
+     2. Record the correct full-move number from the startup FEN (instead
+     of always behaving as though it were 1).
+
+	* include/movegen.h: Add a special staged move generation. This is
+	  as yet not used much, but it could be.
+
+	* include/mate.h, include/search.h: Add special mate-search code:
+	  this is a special search function that uses the staged
+	  move-generator. It returns either a mate-score (which is
+	  accurate) or a non-mate score (which is arbitrary and should be
+	  treated as an indication to continue the regular search).
+
+	* include/fen.h, include/search.h: Fix parsing FEN records that do
+	  not include an en-passant square: we don't want to skip over the
+	  next field in that case.
+
+	* include/mate.h, include/search.h: Make sure the mate-search is
+	  aborted if time runs out.
+
+	* include/search.h: Fix move number in PV output with black to
+	  move.
+
+	* include/search.h: Do not break out with a mate score based on the
+	  depth of the iteration matching the mate score, but based on the
+	  length of the PV matching the distance to mate.
+
+	* include/search.h: Perform a special mate-search close to the root
+	  or at great depth in drop variants. Tests as a mild improvement
+	  there, can probably be tweaked for more.
+
+	* include/game.h, include/search.h, src/xboard.cc: Add an option to
+	  enable/disable the special mate search.
+
+	* include/search.h: Allow for future expansion of the mate-search
+	  options.
+
+
+Between 1.0RC3 and 1.0RC4:
+
+	* include/board.h: Avoid warning about shadowing a member variable
+	  of the same name.
+
+	* CMakeLists.txt: Fix make install target for manpage.
+
+	* include/game.h, src/xboard.cc: Fix handling of commands in
+	  analysis mode: commands that should act on the
+	  root position should not be handled until after we return from
+	  the search.
+
+	* src/xboard.cc: Add some FRC/Chess960 castling test positions from
+	  Reinhard Scharnagl.
+
+	* src/xboard.cc: Report depth for expected perft positions.
+
+	* src/xboard.cc: Fix a mistake in the perft count for one of the
+	  new FRC test positions.
+
+	* include/board.h: Fix a design flaw in makemove: also for swaps,
+	  the destination squares need to be cleared before we resolve the
+	  drop side of the swap. Not doing this will corrupt the board
+	  state in FRC castle positions where the king moves to the rook
+	  square.
+
+	* include/fen.h: Correct FEN output strings for boards with virtual
+	  ranks/files and holes.
+	  Fix a bug where the 50-move counter would be wrong (~arbitrary)
+	  for FEN strings that didn't include the field.
+
+	* include/betza_string.h: Fix a bug in the generation of Betza
+	  strings for steppers: the direction masks for the Ferz were not
+	  properly calculated, leading to a buggy definition of the pawn
+	  move in Legan Chess (mF rather than lfmF).
+
+	* include/game.h, src/xboard.cc: Keep track of time at each move,
+     so the program will keep proper time during takenback/undo.
+
+	* src/xboard.cc: Remove temporary debugging print statement.
+
+	* include/test_suite.h: Expand STS test suite positions to include
+	  the full range of positions.
+
+	* include/test_suite.h, src/xboard.cc: Add STS 13 and 14.
+	  Avoid hanging the program in case of a bad testsuite string.
+	  Print number of positions that got awarded points (regardless of
+	  whether the score is optimal or not) in the intermediate outout.
+
+	* include/variants.h, src/xboard.cc: Add Great Shatranj as a known
+	  variant. http://hgm.nubati.net/rules/Great.html or
+	  http://www.chessvariants.org/index/msdisplay.php?itemid=MSgreatshatranjm
+
+	* include/variants.h, src/xboard.cc: Add Superchess. XBoard has a
+	  bug in that it will publish castling rights if no corresponding
+	  rook is present, which will probably mess us up. Fix missing
+	  limit on number of black pieces in Great Shatranj.
+
+	* include/variants.h, variants.txt: Allow specifying the maximum
+	  number of a particular piece type in the configuration file.
+
+	* variants.txt: Rename Judkins Shogi -> Judkins' Shogi. This
+	  changes the short name to 'judkins'.
+
+	* src/xboard.cc: Unload the user-defined variant config file before
+	  loading a new one. Reset
+	  the options that are sent to XBoard, which updates the variant
+	  list.
+
+	* src/xboard.cc: Allow changing whether user-defined variants are
+     listed first or not through a config options. This is useful because
+     the XBoard variant dialog box is not large enough to contain all
+     build-in variants and all user-defined variants defined in the
+     standard config file, so some of them will be pushed out.
+
+	* include/movegen.h, src/xboard.cc: Minor cleanup of leaper move
+	  generation: use bitboard generation functions where they exist.
+
+	* include/bitboard.h, include/movegen.h: Minor cleanup for
+	  calculating "in-between" squares along a ray.
+	  Move #define update_leaper_bb to before make_aleaper_bitboard().
+
+	* include/search.h: Spacing of PV output in standard mode.
+
+	* sjaakii.pod, src/xboard.cc: Add -xboard/-uci/-usi/-ucci
+	  commandline options to start the engine directly in a particular
+	  mode. These aren't really needed, but they serve to suppress the
+	  board/prompt output, which may be desirable for some interfaces.
+
+	* include/evaluate.h: Document purpose of evaluation term attacking
+	  flags.
+
+	* src/xboard.cc: Fix highlight FEN on normal (non-virtual/omega)
+	  boards, which were broken by the fix that made them work for
+	  Omega (duh). Fix using input[1] to determine the UCI dialect if
+	  -uci/usi/ucci are passed as startup options (reported by Martin).
+
+	* src/rules/san.cc: Fix a bug in the output of SAN moves: the
+	  disambiguation didn't work correctly if the alternatives were a
+	  regular move and a promotion move: the code would still end up
+	  trying to 'disambiguate' by file and rank, rather than by
+	  promotion/no promotion.
+
+	* include/movestring.h: Discard '=' token as optional when parsing
+	  a string. It is used as a promotion deferral in Shogi, or
+	  sometimes in variants of SAN to indicate promotion. Either way,
+	  we don't need it, so just skip it.
+
+	* src/xboard.cc: Make it possible to defer commands received while
+	  thinking until after we have broken out of the thinking loop.
+	  Fixes cases of Sjaak ignoring 'new' while it is thinking, but
+	  giving the impression that it handled the command (by responding
+	  to ping with the proper pong).
+
+	* include/evaluate.h: Include a space-advantage term, as suggested
+	  in http://www.talkchess.com/forum/viewtopic.php?p=609260. No
+	  measurable improvement in regular chess, but a massive plus for
+	  Gothic chess.
+
+	* src/xboard.cc: Fix an issue with colour-FENs: if there is an
+	  optional promotion, the colour of the target square used to
+	  depend on the order in which moves are generated. This is no
+	  longer the case now, and the square gets the colour for promotion
+	  in preference to its default colour.
+
+	* include/variants.h, variants.txt: Allow setting of the number of
+	  repeats required to trigger the "repeated position" end-game
+	  condition from the config file.
+
+	* include/game.h, include/search.h, include/variants.h,
+	  src/xboard.cc, variants.txt: Implement triggering of no_pieces
+	  game-end condition.
+
+	* include/game.h, include/search.h, src/xboard.cc: Implement resign
+	  and draw offer code (disabled by default)
+
+	* include/game.h, include/search.h, src/xboard.cc: Optionally
+	  supress the claiming of repetition draws.
+
+	* include/movegen.h: Do not generate drop moves in QS: they are
+	  pruned anyway (for now).
+
+	* include/game.h, include/search.h, include/variants.h,
+	  src/xboard.cc, variants.txt: Score "perpetual" seperately from
+	  "repeat" (but the same by default). Try really hard to finish the
+	  first iteration (up to possibly using all our available time) to
+	  avoid the situation where we end up with no move to play.
+
+	* include/game.h, include/search.h: Use finer granularity in
+	  clock-testing for drop variants. If we cannot complete the d=1
+	  iteration, prefer to use a move from the hash table to playing a
+	  random move, if there is one.
+
+
+Between 1.0RC2 and 1.0RC3:
+
+	* CMakeLists.txt, include/bitboard.h, include/eval_types.h,
+	  include/evaluate.h, include/game.h, include/killer.h,
+	  include/move.h, include/movegen.h, include/search.h,
+	  include/see.h, include/variants.h, src/xboard.cc: Fix many
+	  compiler warnings. Enable warnings by default.
+
+	* include/movestring.h: Fix disambiguation of castling move when a
+	  piece is gated in.
+
+	* include/fen.h: Ignore squares marked * in a FEN: these are meant
+	  to be void (off-board) squares
+
+	* src/xboard.cc: Include promotions in the highlight colour FEN.
+
+	* include/bitboard.h, include/board_rules.h: Fix the double-use of
+	  board_files[0] as the file_mask: this will not work
+	  correctly if a variant deletes squares from the file.
+
+	* variants.txt: Fix a mistake in the definition of Judkins Shogi:
+     the drop restrictions for pawns were accidentally applied to promoted
+     pawns instead.
+
+	* variants.txt: Add a new variant: Omicron Chess, which is like
+     Omega Chess but on a 12x10 board rather than 12x12. Castling is
+     disabled for now and off-board squares are not marked as "dark" to
+     avoid crashes in XBoard (this should be purely cosmetic).
+
+	* variants.txt: Replace Wizard pictograph with Wazir (instead of
+	  Vortex Chancellor)
+
+	* src/xboard.cc: Get rid of __DATE__ in output because it causes
+	  binaries built on different dates to test as different even if
+	  they're not. Change order of variants in XBoard variants tag so
+	  variants from config files are listed first.
+
+	* variants.txt: Remove outdated and misleading comment.
+
+	* CMakeLists.txt, src/timer/timer.c: Don't try to use the realtime
+	  clock if we can't link to librt.
+
+	* CMakeLists.txt, src/timer/timer.c: Better detection of
+	  clock_gettime.
+
+	* variants.txt: Set Omicron Chess FEN to black out the deleted
+	  squares.
+
+	* src/xboard.cc: Add a config option to mark holes in the board in
+     the FEN sent to XBoard.  Needs 4.8+ to work correctly, or XBoard will
+     crash. The option is disabled by default for this reason.
+
+	* src/xboard.cc: Flip the default for "mask dark squares" from true
+	  to false. This means a work-around needs to be enabled for XBoard
+	  4.8
+
+	* include/board.h, include/fen.h, include/movegen.h: Rename
+	  ep_capture->ep_victim. It is clearer.
+
+	* include/movegen.h: Not all instances of ep_capture referred to
+	  the victim (which is yet another reason to change the name).
+	  Change instances where it referred to the destination square
+	  accordingly.
+
+	* include/board.h, include/fen.h, include/movegen.h: Replace
+	  en-passant square with a bitboard. The idea is that this can hold
+	  multiple en-passant squares, for large variants where pawns can
+	  move three ranks on their first step (such as Omega Chess)
+
+	* include/board_rules.h, include/fen.h, include/game.h,
+	  include/movestring.h, include/squares.h, src/rules/squares.cc:
+	  Loosen the connection between the square ID in the FEN string and
+	  the bit index on the board. This allows us to make mangled
+	  boards, like for Omega Chess, that are larger than 128 bits.
+	  Better (more robust) identification of LAN strings. More accurate
+	  square-string matching.
+
+	* include/variants.h, src/xboard.cc: Add Omega Chess (not enabled).
+     It works, after a fashion, by hacking the movement tables so we can
+     fake the 12x12 on a 12x10 board.  Castling is missing (no real reason,
+     but XBoard can't do it), SAN input is likely broken, board output is
+     broken (it displays the mangled internal view of the board) and
+     detecting of mate potential does not work (the routine is not designed
+     with holey boards in mind).
+
+	* include/game.h, include/variants.h, src/xboard.cc, variants.txt:
+	  Add a "Xboard parent" tag for variants defined in the config
+	  file. Needed because "fairy" does not always work correctly.
+
+	* include/chase.h: Fix "may be used uninitialised" warning.
+
+	* include/game.h, include/movegen.h: Apply board mask to leaper
+     tables, otherwise "holes" in the board will not be masked out. This is
+     not a problem during play, because the move generator applies the mask
+     anyway, but it breaks mate potential detection and is generally
+     sloppy.  Fix a few issues in the mate potential detection: the
+     defending king is allowed an entire quadrant (to take into account
+     boards with holes, where we may not just be able to stick the king in
+     a corner), but the corner and edge are tested first for efficiency
+     reasons.  Discard positions where the attacking king blocks all escape
+     squares by itself: such positions are unreachable in legal play. They
+     occur in the analysis of Omega Chess and Knightmate.
+
+	* include/betza_string.h, include/variants.h, src/xboard.cc,
+	  variants.txt: Enable castling in Omega and Omicron Chess.
+
+	* include/game.h: Fix detection of mating pairs and mate-potential
+	  assesment in Omega Chess. It fails to detect that a rook cannot
+	  force mate.
+
+	* src/xboard.cc: Send multi-leg moves in two consecutive lines. Not
+	  that we generate those at the moment.
+
+	* include/game.h, include/movestring.h, include/xstring.h,
+	  src/xboard.cc: Simplify matching of move string to move: instead
+	  of parsing the string, simply convert all legal moves to a string
+	  and test if the strings match. This is much less error-prone.
+
+	* include/xstring.h: Add missing header files.
+
+	* include/board.h, include/fen.h, include/game.h,
+     include/piece_rules.h, include/variants.h, src/rules/squares.cc:
+     Change the way the board is printed so "virtual" boards are printed
+     accurately. So far, this only affects the output for Omega Chess.
+
+	* src/xboard.cc: Fix a bug in the formatting of the variant list
+	  that is printed in response to "variants".
+
+	* include/board.h, include/game.h: Unify the board.print() and
+	  board.print_demo_board() routines.
+
+	* CMakeLists.txt, sjaakii.pod: Add a basic manpage.
+
+	* CMakeLists.txt, src/xboard.cc: Rename SVNVERSION->SJAAKIIVERSION.
+

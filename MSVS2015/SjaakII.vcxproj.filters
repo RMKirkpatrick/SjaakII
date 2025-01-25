@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\xboard.cc" />
+    <ClCompile Include="..\src\eval\pst.cc" />
+    <ClCompile Include="..\src\hash\evalhash.c" />
+    <ClCompile Include="..\src\hash\hashkey.c" />
+    <ClCompile Include="..\src\hash\hashtable.c" />
+    <ClCompile Include="..\src\misc\aligned_malloc.c" />
+    <ClCompile Include="..\src\misc\ansi.c" />
+    <ClCompile Include="..\src\misc\cfgpath.c" />
+    <ClCompile Include="..\src\misc\genrand.c" />
+    <ClCompile Include="..\src\misc\keypressed.c" />
+    <ClCompile Include="..\src\misc\snprintf.c" />
+    <ClCompile Include="..\src\misc\softexp.c" />
+    <ClCompile Include="..\src\rules\bitboard.cc" />
+    <ClCompile Include="..\src\rules\game.cc" />
+    <ClCompile Include="..\src\rules\move.cc" />
+    <ClCompile Include="..\src\rules\san.cc" />
+    <ClCompile Include="..\src\rules\squares.cc" />
+    <ClCompile Include="..\src\timer\timer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{7d10e825-1978-4a1f-ab82-bf18ffc384fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\aligned_malloc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ansi.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assert.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\betza_string.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bitboard.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bits.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bits32.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bits64.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bits128.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\board.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\board_rules.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\bool.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\cfgpath.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\compilerdef.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\eval_param.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\eval_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\evalhash.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\evaluate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\fen.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\game.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\genrand.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hashkey.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hashpath.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\hashtable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\history.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\chase.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\keypressed.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\killer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\mate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\move.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\moveflag.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\movegen.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\movelist.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\movestring.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\movetype.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\piece_rules.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\piece_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\pieces.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\prefetch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\pst.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\san.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\score.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\search.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\see.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sjaak.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\softexp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\squares.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\test_suite.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\timer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\variants.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\xstring.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

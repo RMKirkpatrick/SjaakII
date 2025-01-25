@@ -1,0 +1,12 @@
+#include "compilerdef.h"
+#include "genrand.h"
+#include "timer.h"
+#include "bitboard.h"
+#include "board.h"
+#include "movegen.h"
+#include "aligned_malloc.h"
+#include "hashkey.h"
+#include "game.h"
+#include "variants.h"
+#include "squares.h"
+
