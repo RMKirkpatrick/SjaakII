@@ -3748,4 +3748,49 @@ Rule: repeat3 = draw
 Rule: special init
 
 
+#############################################################
+# Charge of the Light Brigade                               #
+# Implemented for compatibility with pychess.py.            #
+#############################################################
+Variant: light-brigade (8x8)
+Board: 8x8
+FEN: "nnnnknnn/pppppppp/8/8/8/8/PPPPPPPP/1Q1QK1Q1 w - - 0 1"
+XBoard pieces: "P...Q................Kpn...................k"
+Zone: rank8 = a8,b8,c8,d8,e8,f8,g8,h8
+Zone: rank1 = a1,b1,c1,d1,e1,f1,g1,h1
+
+# Define the pieces
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+Value: 320
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+Value: 950
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Initial: step 2N
+Symbol: " ", "P,p"
+Flags: set_ep,take_ep
+# White P only promote to Q, black P only promote to N:
+Promotion: rank8, rank8, "Q"
+Promotion: rank1, rank1, "N"
+#^^^Black P should never reach rank 8, and white P should never reach rank 1.
+Value: 100
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+
+
+
 
