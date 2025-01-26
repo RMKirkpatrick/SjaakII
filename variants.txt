@@ -3957,4 +3957,41 @@ Rule: captureallflags = win
 
 
 
+#############################################################
+# Gardner's 4x5 Chess                                       #
+# Implemented for compatibility with Fairy-Stockfish.       #
+#############################################################
+Variant: 4x5chess
+Board: 4x5
+FEN: "rnbk/pppp/4/PPPP/RNBK w - - 0 1"
+XBoard pieces: "PNBRQKpnbrqk"
+Zone: rank5 = a5,b5,c5,d5
+Zone: rank1 = a1,b1,c1,d1
+
+# Define the pieces
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Symbol: " ", "P,p"
+Promotion: rank5, rank1, "QRBN"
+
+
+
 
