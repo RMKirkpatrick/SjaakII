@@ -3813,4 +3813,25 @@ Rule: stalemate = win
 
 
 
+#################################################################
+# Lewthwaite's Game                                             #
+# https://ludii.games/details.php?keyword=Lewthwaite%27s%20Game #
+#################################################################
+# Solved game: black wins with perfect play.
+Variant: lewthwaite
+Board: 5x5                                                     
+FEN: "wWwWw/WwWwW/wW1Ww/WwWwW/wWwWw w 0 1"    
+XBoard pieces: ".........W.....................w............"
+
+Piece: Wazir
+Move: step N,S,E,W
+Capture: none
+Symbol: "W", "W,w"
+Value: 100
+
+# Win by leaving your opponent without a move:
+Rule: stalemate = win
+
+
+
 
