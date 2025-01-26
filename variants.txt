@@ -3916,4 +3916,45 @@ Rule: captureanyflag = win
 
 
 
+#############################################################
+# T'uk-T'uk                                                 #
+# Implemented for compatibility with Fairy-Stockfish.       #
+#############################################################
+# Supposedly a solved game: black wins with perfect play.
+Variant: tuktuk
+Board: 6x6
+FEN: "wwwwww/6/6/6/6/WWWWWW w - -"
+XBoard pieces: ".........W.....................w............"
+
+Piece: Rook
+Move: slide (V)
+Capture: none
+Symbol: "W", "W,w"
+
+Rule: stalemate = win
+
+
+
+#############################################################
+# Bajr                                                      #
+# Implemented for compatibility with Fairy-Stockfish.       #
+#############################################################
+# Solved game: white wins with perfect play.
+Variant: bajr
+Board: 6x6
+FEN: "4pp/5p/6/6/P5/PP4 w - -"
+XBoard pieces: "PNBRQKpnbrqk"
+BlackFlag: f5,e6,f6
+WhiteFlag: a1,b1,a2
+
+Piece: Pawn
+Move: step N,NE,E
+Capture: none
+Symbol: " ", "P,p"
+Flags: capture_flag
+
+Rule: captureallflags = win
+
+
+
 
