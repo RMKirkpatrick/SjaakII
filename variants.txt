@@ -1635,11 +1635,13 @@ Rule: repeat3 = draw
 # Elven chess, http://www.chessvariants.org/index/msdisplay.php?itemid=MSelvenchess #
 # This is an XBoard standard variant under the name "elven", so "XBoard pieces" and #
 # "XBoard parent" are not needed.                                                   #
+# There's a bug somewhere; problematic lines are commented out & replaced below.    #
 #####################################################################################
 Variant: Elven (Chu) Chess
 Board: 10x10
 
-FEN: "r3k4r/mnb+rql+bbnm/pppppppppp/10/10/10/10/PPPPPPPPPP/MNB+BLQ+RBNM/R4K3R w KQkq - 0 1"
+# FEN: "r3k4r/mnb+rql+bbnm/pppppppppp/10/10/10/10/PPPPPPPPPP/MNB+BLQ+RBNM/R4K3R w KQkq - 0 1"
+FEN: "r3k4r/mnbcqlabnm/pppppppppp/10/10/10/10/PPPPPPPPPP/MNBALQCBNM/R4K3R w KQkq - 0 1"
 #XBoard pieces: "PNBRQ.....M.+++......LKpnbrq.....m.+++......lk"
 #XBoard parent: elven
 Zone: rank8 = a8,b8,c8,d8,e8,f8,g8,h8,i8,j8
@@ -1692,13 +1694,101 @@ Value: 300
 Piece: Elf
 Move: slide (D,A)
 Move: leap (0,1)
-Symbol: "+B", "+B,+b"
+# Symbol: "+B", "+B,+b"
+Symbol: "A", "A,a"
 Value: 525
 
 Piece: Goblin
 Move: slide (H,V)
 Move: leap (1,1)
-Symbol: "+R", "+R,+r"
+# Symbol: "+R", "+R,+r"
+Symbol: "C", "C,c"
+Value: 725
+
+Piece: Warlock
+Move: leap ((0,1)|(1,1))+((0,1)|(1,1))
+Flags: no_retaliate,endangered
+Symbol: "L", "L,l"
+Value: 1500
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+
+
+
+#####################################################################################
+# Elfin chess (alternate spelling of Elven ["Chu"] Chess)                           #
+# Disallows castling due to an apparent bug(?)                                      #
+# Includes other workarounds for bugs in Xboard(?)                                  #
+#####################################################################################
+Variant: Elfin
+Board: 10x10
+
+# FEN: "r3k4r/mnb+rql+bbnm/pppppppppp/10/10/10/10/PPPPPPPPPP/MNB+BLQ+RBNM/R4K3R w KQkq - 0 1"
+FEN: "r3k4r/mnbcqlabnm/pppppppppp/10/10/10/10/PPPPPPPPPP/MNBALQCBNM/R4K3R w KQkq - 0 1"
+#  XBoard pieces ALL: "PNBRQFEACWMOHIJGDVLSUKpnbrqfeacwmohijgdvlsuk"
+XBoard pieces: "PNBRQ.AC..M..........LKpnbrq.ac..m..........lk"
+#XBoard parent: elven
+Zone: rank8 = a8,b8,c8,d8,e8,f8,g8,h8,i8,j8
+Zone: rank3 = a3,b3,c3,d3,e3,f3,g3,h3,i3,j3
+
+# Define the pieces
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+Value: 300
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+Value: 350
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+Value: 500
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+Value: 950
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+# Castle: white f1-i1 with j1
+# Castle: white f1-c1 with a1
+# Castle: black f10-i10 with j10
+# Castle: black f10-c10 with a10
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Special: rank3, rank8, step 2N
+Symbol: " ", "P,p"
+Flags: set_ep,take_ep
+Promotion: rank8, rank3, "QRBN"
+Value: 100
+
+Piece: Dwarf
+Move: leap (0,1)|(1,1)
+Symbol: "M", "M,m"
+Value: 300
+
+Piece: Elf
+Move: slide (D,A)
+Move: leap (0,1)
+# Symbol: "+B", "+B,+b"
+Symbol: "A", "A,a"
+Value: 525
+
+Piece: Goblin
+Move: slide (H,V)
+Move: leap (1,1)
+# Symbol: "+R", "+R,+r"
+Symbol: "C", "C,c"
 Value: 725
 
 Piece: Warlock
