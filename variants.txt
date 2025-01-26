@@ -3679,4 +3679,73 @@ Rule: repeat3 = draw
 Rule: special init
 
 
+##################################################################################################################################################
+# Capablanca Chess on a 10x10 board.                                                                                                             #
+# This was Capablanca's first version of his variant, played on a 10x10 board, before he decided on a 10x8 board and a different starting array. #
+##################################################################################################################################################
+Variant: cap100
+Board: 10x10
+FEN: "rnbaqkcbnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBAQKCBNR w KQkq - 0 1"
+XBoard pieces: "PNBRQ..AC.......Kpnbrq..ac.......k"
+Zone: rank10 = a10,b10,c10,d10,e10,f10,g10,h10,i10,j10
+Zone: rank9 = a9,b9,c9,d9,e9,f9,g9,h9,i9,j9
+Zone: rank2 = a2,b2,c2,d2,e2,f2,g2,h2,i2,j2
+Zone: rank1 = a1,b1,c1,d1,e1,f1,g1,h1,i1,j1
+
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+Value: 275
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+Value: 350
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+Value: 475
+
+Piece: Chancellor
+Move: leap (2,1)
+Move: slide (H,V)
+Symbol: "C", "C,c"
+Value: 875
+
+Piece: Archbishop
+Move: leap (2,1)
+Move: slide (D,A)
+Symbol: "A", "A,a"
+Value: 825
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+Value: 950
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+Castle: white f1-i1 with j1
+Castle: white f1-c1 with a1
+Castle: black f10-i10 with j10
+Castle: black f10-c10 with a10
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Special: rank2, rank9, step 2N
+Symbol: " ", "P,p"
+Flags: set_ep,take_ep
+Promotion: rank10, rank1, "QACRBN"
+Value: 100
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+Rule: special init
+
+
 
