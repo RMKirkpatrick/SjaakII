@@ -1772,9 +1772,9 @@ Rule: check3 = win
 
 
 
-####################
-# Might Lion Chess #
-####################
+#####################
+# Mighty Lion Chess #
+#####################
 Variant: Lion (8x8, Mighty Lion)
 Board: 8x8
 
