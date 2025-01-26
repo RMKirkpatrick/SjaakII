@@ -3504,4 +3504,64 @@ Rule: bare rule
 
 
 
+######################################################################
+# Horde                                                              #
+# Implemented for compatibility with Fairy-Stockfish and pychess.py. #
+######################################################################
+Variant: horde
+Board: 8x8
+FEN: "rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1"
+XBoard pieces: "PNBRQKpnbrqk"
+Zone: rank8 = a8,b8,c8,d8,e8,f8,g8,h8
+Zone: rank7 = a7,b7,c7,d7,e7,f7,g7,h7
+Zone: rank2 = a2,b2,c2,d2,e2,f2,g2,h2
+Zone: rank1 = a1,b1,c1,d1,e1,f1,g1,h1
+
+# Define the pieces
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+Value: 320
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+Value: 325
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+Value: 500
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+Value: 950
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+Castle: white e1-g1 with h1
+Castle: white e1-c1 with a1
+Castle: black e8-g8 with h8
+Castle: black e8-c8 with a8
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Special: rank1, rank2, step 2N
+Symbol: " ", "P,p"
+Flags: set_ep,take_ep
+Promotion: rank8, rank1, "QRBN"
+Value: 100
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+Rule: nopieces = loss
+# Rule: bare rule
+# Rule: loneking = loss
+
+
 
