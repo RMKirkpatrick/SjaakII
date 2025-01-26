@@ -3834,4 +3834,46 @@ Rule: stalemate = win
 
 
 
+###############################################################
+# Straits                                                     #
+# https://www.chess.com/blog/Pokshtya/chess-variant-from-1893 #
+###############################################################
+Variant: straits
+Board: 9x11
+FEN: "rrbbqbbrr/1rrbbbrr1/3mmm3/*7*/**5**/***3***/**5**/*7*/3MMM3/1RRBBBRR1/RRBBQBBRR w - -"
+XBoard pieces: "..BRQ.....M.............brq.....m..........."
+WhiteFlag: e6
+BlackFlag: e6
+Zone: void = a4,a5,a6,a7,a8,b5,b6,b7,c6,g6,h5,h6,h7,i4,i5,i6,i7,i8
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+Block: void, void
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+Block: void, void
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+Flags: royal, capture_flag
+Block: void, void
+
+Piece: Gunboat
+Move: leap (0,1)|(1,1)
+Capture: leap (1,1)
+Symbol: "M", "M,m"
+Block: void, void
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+Rule: movecountdraw = 50
+Rule: captureanyflag = win
+
+
+
 
