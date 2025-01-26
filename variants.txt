@@ -647,7 +647,10 @@ Flags: royal
 Piece: Pawn
 Move: step N
 Capture: step NE,NW
+# Allow initial double-step & en passant capture, for compatibility with Fairy-Stockfish:
+Initial: step 2N
 Symbol: " ", "P,p"
+Flags: set_ep,take_ep
 Promotion: rank8, rank1, "QRBN"
 Value: 100
 
