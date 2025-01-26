@@ -3994,4 +3994,25 @@ Promotion: rank5, rank1, "QRBN"
 
 
 
+#############################################################
+# Octopawn                                                  #
+# Test of the 4x4 board.                                    #
+# Apparently, SjaakII chokes on anything smaller.           #
+#############################################################
+Variant: octopawn
+Board: 4x4
+FEN: "pppp/4/4/PPPP w - -"
+XBoard pieces: "PNBRQKpnbrqk"
+BlackFlag: a4,b4,c4,d4
+WhiteFlag: a1,b1,c1,d1
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Symbol: " ", "P,p"
+Flags: capture_flag
+
+Rule: stalemate = win
+Rule: nopieces = loss
+Rule: captureanyflag = win
 
