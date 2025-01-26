@@ -3439,5 +3439,69 @@ Rule: stalemate = draw
 Rule: repeat3 = draw
 Rule: en-passant check
 
+                                                                 
+##############################################################################################
+# CMOKOBYK-2K                                                                                #
+# Pronounced "smokovook-dva-khe" (pretend it's written in Cyrillic!).                        #
+# Stands for: "CheckMate Opponent's King or Bare Your King - 2 Kings edition"                #
+# A brainchild of Robert M. Kirkpatrick!  Created & playtested 2023 - 2025.                  #
+# Sjaak II's 'must capture' rule is "strict", in that check does not override a player's     #
+# obligation to make a capture if s/he is able to do so.                                     #
+# The game was thus too "volatile" with queens starting on the board and with only one royal #
+# piece per side; replacing each queen with a second king was the perfect answer.            #
+##############################################################################################
+Variant: cmokobyk-2k
+Board: 8x8
+FEN: "rnbkkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKKBNR w - -"
+XBoard pieces: "PNBRQKpnbrqk"
+Zone: rank8 = a8,b8,c8,d8,e8,f8,g8,h8
+Zone: rank7 = a7,b7,c7,d7,e7,f7,g7,h7
+Zone: rank2 = a2,b2,c2,d2,e2,f2,g2,h2
+Zone: rank1 = a1,b1,c1,d1,e1,f1,g1,h1
+
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+
+# Although there are no queens in the initial array, it remains legal to promote to Q:
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+# A player with only one K on the board can promote to a second K:
+Max: 2
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Special: rank2, rank7, step 2N
+Symbol: " ", "P,p"
+Flags: set_ep,take_ep
+Promotion: rank8, rank1, "QRBNK"
+
+Rule: stalemate = draw
+# As usual, you win if you checkmate your opponent's only remaining king:
+Rule: checkmate = win
+Rule: repeat3 = draw
+Rule: movecountdraw = 50
+# Mandatory capture:
+Rule: forced capture
+# You win if your opponent captures all your chessmen exept one king:
+Rule: loneking = win
+Rule: bare rule
+
+
 
 
