@@ -3564,4 +3564,48 @@ Rule: nopieces = loss
 # Rule: loneking = loss
 
 
+###############################################################################
+# Argentinian Chess (https://www.chessvariants.org/diffsetup.dir/argess.html) #
+###############################################################################
+Variant: argess                                      
+Board: 8x8
+FEN: "rppppnbk/6qb/7n/7p/PPPP3p/RNPP3p/BQNP3p/KBRP3r w - -"    # Black is supppsed to move first, but that causes errors in machine-vs-machine matchup.
+XBoard pieces: "PNBRQKpnbrqk"
+Zone: whitePromo = h7,g8,h8                          # Special regions on the board, used below
+Zone: blackPromo = a2,a1,b1
+
+# Define the pieces
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+
+Piece: Bishop
+Move: slide (D,A)
+Symbol: "B", "B,b"
+
+Piece: Rook
+Move: slide (H,V)
+Symbol: "R", "R,r"
+
+Piece: Queen
+Move: slide (D,A,H,V)
+Symbol: "Q", "Q,q"
+
+Piece: King
+Move: leap (0,1)|(1,1)
+Symbol: "K", "K,k"
+Flags: royal
+
+Piece: Pawn
+Move: step N,S,E,W
+Capture: step NE,NW,SW,SE
+Symbol: " ", "P,p"
+Promotion: whitePromo, blackPromo, "QRBN"
+
+Rule: checkmate = win
+Rule: stalemate = draw
+Rule: repeat3 = draw
+
+
+
 
