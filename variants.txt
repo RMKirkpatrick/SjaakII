@@ -4139,3 +4139,26 @@ Rule: captureanyflag = win
 
 
 
+#############################################################
+# Hexapawn, for SjaakII                                     #
+# The 3x3 board is apparently too small for SjaakII?        #
+# In this implementation, the board is actually 5x3, but    #
+# files 'a' and 'e' are out-of-bounds.                      #
+#############################################################
+Variant: hexapawn4sjaak
+Board: 5x3
+FEN: "*ppp*/*3*/*PPP* w - -"
+XBoard pieces: "PNBRQKpnbrqk"
+Exclude: a1,e1,a2,e2,a3,e3
+BlackFlag: b3,c3,d3
+WhiteFlag: b1,c1,d1
+
+Piece: Pawn
+Move: step N
+Capture: step NE,NW
+Symbol: " ", "P,p"
+Flags: capture_flag
+
+Rule: stalemate = win
+Rule: nopieces = loss
+Rule: captureanyflag = win
