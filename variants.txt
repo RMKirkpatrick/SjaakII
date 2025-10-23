@@ -3881,6 +3881,25 @@ Rule: stalemate = win
 
 
 
+#############################################################
+# Clobber on a 10x10 board.                                 #
+#############################################################
+Variant: clobber10
+Board: 10x10
+FEN: "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP w 0 1"    
+XBoard pieces: "PNBRQKpnbrqk"
+
+# Can only move to capture:
+Piece: Pawn
+Capture: step N,S,E,W
+Symbol: " ", "P,p"
+Value: 100
+
+# Win by leaving your opponent without a move:
+Rule: stalemate = win
+
+
+
 #################################################################
 # Lewthwaite's Game                                             #
 # https://ludii.games/details.php?keyword=Lewthwaite%27s%20Game #
