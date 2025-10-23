@@ -4103,3 +4103,39 @@ Rule: stalemate = win
 Rule: nopieces = loss
 Rule: captureanyflag = win
 
+
+
+#############################################################
+# A kludgy implementation of Jeson Mor'.                     #
+# SjaakII only recognizes capture-the-flag victory to       #
+# trigger on the turn in which the flag-piece reached the   #
+# target square, and not the following turn instead.  This  #
+# implementation treats center square e5 as a promotion     #
+# zone, where knights promote to identically moving         #
+# unicorns; unicorns are the flag-pieces, and the target    #
+# squares are a knight's move from e5.
+#############################################################
+Variant: iesonmora
+Board: 9x9
+FEN: "nnnnnnnnn/9/9/9/9/9/9/9/NNNNNNNNN w - - 0 1"
+XBoard pieces: ".N..................U..n..................u."
+BlackFlag: d7,f7,g6,g4,f3,d3,c4,c6
+WhiteFlag: d7,f7,g6,g4,f3,d3,c4,c6
+Zone: promo = e5
+
+Piece: Knight
+Move: leap (2,1)
+Symbol: "N", "N,n"
+Promotion: promo, promo, "U"
+# Optional promotion: empty, empty
+
+Piece: Unicorn
+Move: leap(2,1)
+Symbol: "U", "U,u"
+Flags: capture_flag
+
+Rule: nopieces = loss
+Rule: captureanyflag = win
+
+
+
